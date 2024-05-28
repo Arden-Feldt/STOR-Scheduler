@@ -1,10 +1,10 @@
 package Faculty;
 
+import Course.TimeSlot;
+
 public class Faculty {
     private String name;
-    private int[] timeSlots;
+    private TimeSlot[] timeSlots;
     boolean backToBack;
     boolean getsOpinion;
-
-    // Implementation
 }
