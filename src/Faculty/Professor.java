@@ -7,12 +7,15 @@ import java.util.ArrayList;
 public class Professor extends Faculty{
     private String name;
     private ArrayList<TimeSlot> timeSlots;
+
+    private int[] willingness;
     private boolean backToBack;
     private boolean getsOpinion;
 
     public Professor(String name){
         this.name = name;
         this.getsOpinion = true;
+        this.willingness = new int[18];
     }
 
     public void setTimeSlots(ArrayList<TimeSlot> timeSlots) {
@@ -25,6 +28,10 @@ public class Professor extends Faculty{
 
     public void setGetsOpinion(boolean getsOpinion) {
         this.getsOpinion = getsOpinion;
+    }
+
+    public void setWillingness(int[] willingness) {
+        this.willingness = willingness;
     }
 
     @Override

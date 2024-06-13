@@ -48,16 +48,21 @@ public class PreferenceReader {
                 int[] willingness = new int[18];
 
                 for (int i = 3; i <= 20; i++){
-                    if (value[i].isEmpty()){
-                        willingness[i-3] = 0;
+                    if (value[i].isEmpty() || value[i] == null) {
+                        willingness[i - 3] = 0;
                     } else {
-                        willingness[i - 3] = Integer.getInteger(value[i]);
-                        timeslots.add(TimeSlot.valueOf(TIMESLOTSTRINGS[i-3]));
+                        try {
+                            willingness[i - 3] = Integer.parseInt(value[i]); // Use Integer.parseInt
+                            if (willingness[i - 3] > 0) {
+                                timeslots.add(TimeSlot.valueOf(TIMESLOTSTRINGS[i - 3]));
+                            }
+                        } catch (NumberFormatException e) {
+                            willingness[i - 3] = 0; // Handle invalid integer format
+                        }
                     }
                 }
 
-                // TODO: Add willingness
-
+                professor.setWillingness(willingness);
                 professor.setTimeSlots(timeslots);
 
             }
