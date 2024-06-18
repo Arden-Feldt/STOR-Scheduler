@@ -1,8 +1,9 @@
 import Faculty.PreferenceReader;
 import Faculty.Professor;
 
-// Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
-// then press Enter. You can now see whitespace characters in your code.
+import java.util.HashSet;
+
+
 public class Main {
     public static void main(String[] args) {
 
@@ -12,9 +13,7 @@ public class Main {
 
         preferenceReader.buildProfessors();
 
-        for (Professor professor: preferenceReader.getProfessors()){
-            System.out.println(professor.toString());
-        }
+        test_prof_impl(preferenceReader);
 
         // TODO: implement Gurobi java API
 
@@ -22,5 +21,13 @@ public class Main {
 
         // TODO: output optimal solution in legible format
 
+    }
+
+    public static void test_prof_impl(PreferenceReader preferenceReader){
+        HashSet<Professor> professors = preferenceReader.getProfessors();
+
+        for (Professor professor: professors){
+            System.out.println(professor.toString());
+        }
     }
 }
