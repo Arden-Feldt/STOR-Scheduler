@@ -35,6 +35,34 @@ public class Professor extends Faculty{
     }
 
     @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public boolean getBacktoBack() {
+        return super.getBacktoBack();
+    }
+
+    @Override
+    public boolean getGetsOpinion() {
+        return super.getGetsOpinion();
+    }
+
+    @Override
+    public ArrayList<TimeSlot> getTimeSlots() {
+        return timeSlots;
+    }
+
+    public int[] getWillingness() {
+        return willingness;
+    }
+
+    public boolean isGetsOpinion() {
+        return getsOpinion;
+    }
+
+    @Override
     public String toString() {
         return name;
     }

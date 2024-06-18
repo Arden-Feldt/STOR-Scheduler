@@ -2,9 +2,11 @@ package Faculty;
 
 import Course.TimeSlot;
 
+import java.util.ArrayList;
+
 public class Faculty {
     private String name;
-    private TimeSlot[] timeSlots;
+    private ArrayList<TimeSlot> timeSlots;
     private boolean backToBack;
     private boolean getsOpinion;
 
@@ -12,7 +14,7 @@ public class Faculty {
         return name;
     }
 
-    public TimeSlot[] getTimeSlots() {
+    public ArrayList<TimeSlot> getTimeSlots() {
         return timeSlots;
     }
 
