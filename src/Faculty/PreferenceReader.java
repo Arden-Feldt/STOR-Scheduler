@@ -39,9 +39,6 @@ public class PreferenceReader {
                 Professor professor = new Professor(value[1]);
                 professors.add(professor);
 
-                boolean backToBack;
-                backToBack = value[2].equals("1");
-                professor.setBackToBack(backToBack);
 
                 // Build body for friends
                 ArrayList<TimeSlot> timeslots = new ArrayList<>();
@@ -62,8 +59,11 @@ public class PreferenceReader {
                     }
                 }
 
+
+
                 professor.setWillingness(willingness);
                 professor.setTimeSlots(timeslots);
+                professor.setBackToBack((value[2]).equals("1"));
 
             }
         } catch (IOException e) {
