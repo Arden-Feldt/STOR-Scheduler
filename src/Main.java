@@ -1,6 +1,7 @@
 import Faculty.PreferenceReader;
 import Faculty.Professor;
 
+import java.util.Arrays;
 import java.util.HashSet;
 
 
@@ -27,7 +28,11 @@ public class Main {
         HashSet<Professor> professors = preferenceReader.getProfessors();
 
         for (Professor professor: professors){
-            System.out.println(professor.toString());
+            System.out.println(professor.toString() +
+                    Arrays.toString(professor.getWillingness()) +
+                    professor.getBacktoBack() +
+                    professor.getGetsOpinion());
+
         }
     }
 }
