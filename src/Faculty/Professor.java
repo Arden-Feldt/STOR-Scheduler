@@ -41,12 +41,12 @@ public class Professor extends Faculty{
 
     @Override
     public boolean getBacktoBack() {
-        return super.getBacktoBack();
+        return backToBack;
     }
 
     @Override
     public boolean getGetsOpinion() {
-        return super.getGetsOpinion();
+        return getsOpinion;
     }
 
     @Override
