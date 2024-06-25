@@ -1,4 +1,4 @@
-package javaWork;
+package Faculty;
 
 import Course.TimeSlot;
 
