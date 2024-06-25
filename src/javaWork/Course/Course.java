@@ -1,7 +1,6 @@
-package Course;
+package javaWork.Course;
 
-import Faculty.Faculty;
-
+import javaWork.Faculty;
 
 
 public class Course{
