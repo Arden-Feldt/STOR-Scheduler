@@ -22,6 +22,7 @@ public class Main {
 
         // TODO: output optimal solution in legible format
 
+
     }
 
     public static void test_prof_impl(PreferenceReader preferenceReader){
