@@ -48,7 +48,7 @@ public class Main {
         HashSet<Course> courses = courseReader.getCourses();
 
         for (Course course: courses){
-            System.out.println(course.getName() + ", with: " + course.getFaculty());
+            System.out.println(course.getName() + ", with: " + course.getFaculty() + course.getTotalStudents());
 
         }
     }

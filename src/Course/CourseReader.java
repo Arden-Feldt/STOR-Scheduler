@@ -41,8 +41,13 @@ public class CourseReader {
         // Now `data` contains the parsed data rows as arrays of strings
         for (String[] row : data) {
             for (String field : row) {
+                int i = 0;
                 if (facultyManager.isProfessor(field)){
-                    courses.add(new Course(row[0], facultyManager.getProfessor(field)));
+                    if (!row[1].equals("")) {
+                        courses.add(new Course(row[0], facultyManager.getProfessor(field), Integer.parseInt(row[1])));
+                    } else {
+                        courses.add(new Course(row[0], facultyManager.getProfessor(field), 50));
+                    }
                 }
                 System.out.print(field + "\t"); // Print each field (tab-separated)
             }
