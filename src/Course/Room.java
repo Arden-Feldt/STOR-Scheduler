@@ -1,4 +1,4 @@
-package javaWork.Course;
+package Course;
 
 public enum Room {
     Hanes(100),

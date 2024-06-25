@@ -1,4 +1,5 @@
-package javaWork;
+import javaWork.PreferenceReader;
+import javaWork.Professor;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -9,8 +10,7 @@ public class Main {
 
         // TODO: Implement populate classes with the data
 
-        PreferenceReader preferenceReader = new PreferenceReader("src/javaWork/" +
-                "ProfessorData/ProPrefFalls23.csv");
+        PreferenceReader preferenceReader = new PreferenceReader("src/ProfessorData/ProPrefFalls23.csv");
 
         preferenceReader.buildProfessors();
 

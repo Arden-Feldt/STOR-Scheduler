@@ -1,4 +1,4 @@
-package javaWork.Course;
+package Course;
 
 public enum TimeSlot {
     MWF800850(),MWF905955,MWF10101100,MWF11151205,MWF1220110,MWF125215,MWF230320,MWF545635,

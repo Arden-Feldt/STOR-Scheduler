@@ -1,7 +1,7 @@
 package javaWork;
 
 
-import javaWork.Course.TimeSlot;
+import Course.TimeSlot;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

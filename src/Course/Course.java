@@ -1,4 +1,4 @@
-package javaWork.Course;
+package Course;
 
 import javaWork.Faculty;
 
