@@ -1,6 +1,6 @@
-package Faculty;
+package javaWork;
 
-import Course.TimeSlot;
+import javaWork.Course.TimeSlot;
 
 import java.util.ArrayList;
 
