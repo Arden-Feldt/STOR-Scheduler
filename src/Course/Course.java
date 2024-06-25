@@ -34,8 +34,4 @@ public class Course{
     public int getTotalStudents() {
         return totalStudents;
     }
-    // There are 5 classes
-    // 2 big (100)
-    // 2 small (50)
-    // 1 with rolling chairs (40)
 }
