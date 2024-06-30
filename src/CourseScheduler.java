@@ -1,8 +1,27 @@
-import gurobi.*;
+import Course.CourseReader;
+import Course.Course;
+import Faculty.PreferenceReader;
+import Faculty.Professor;
+import com.gurobi.gurobi.*;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 public class CourseScheduler {
+    private Course[] courses;
+    private Professor[] professors;
+    public String[] timeSlots;
 
-    public static void main(String[] args) {
+    public CourseScheduler(PreferenceReader preferenceReader, CourseReader courseReader){
+        this.courses = courseReader.getCourses().toArray(new Course[0]);
+        this.professors = preferenceReader.getProfessors().toArray(new Professor[0]);
+        this.timeSlots = preferenceReader.getTIMESLOTSTRINGS();
+
+
+    }
+
+    public  void optimize() {
         try {
             // Create empty environment, create a new optimization model
             GRBEnv env = new GRBEnv();
@@ -10,13 +29,14 @@ public class CourseScheduler {
 
             // Define courses, professors, time slots, rooms, and willingness data here...
 
+
             // Decision variables
             GRBVar[][][] assign = new GRBVar[courses.length][professors.length][timeSlots.length];
             for (int i = 0; i < courses.length; i++) {
                 for (int j = 0; j < professors.length; j++) {
                     for (int k = 0; k < timeSlots.length; k++) {
                         assign[i][j][k] = model.addVar(0.0, 1.0, 0.0, GRB.BINARY,
-                                "Assign_" + courses[i].getName() + "_" + professors[j].getName() + "_" + timeSlots[k].name());
+                                "Assign_" + courses[i].getName() + "_" + professors[j].getName() + "_" + timeSlots[k]);
                     }
                 }
             }
@@ -26,7 +46,7 @@ public class CourseScheduler {
             for (int i = 0; i < courses.length; i++) {
                 for (int j = 0; j < professors.length; j++) {
                     for (int k = 0; k < timeSlots.length; k++) {
-                        expr.addTerm(willingness[k], assign[i][j][k]);
+                        expr.addTerm(professors[j].getWillingness()[k], assign[i][j][k]);
                     }
                 }
             }
@@ -55,7 +75,7 @@ public class CourseScheduler {
                 for (int j = 0; j < professors.length; j++) {
                     for (int k = 0; k < timeSlots.length; k++) {
                         if (assign[i][j][k].get(GRB.DoubleAttr.X) > 0.5) {
-                            System.out.println("Assign " + courses[i].getName() + " to " + professors[j].getName() + " at " + timeSlots[k].name());
+                            System.out.println("Assign " + courses[i].getName() + " to " + professors[j].getName() + " at " + timeSlots[k]);
                         }
                     }
                 }

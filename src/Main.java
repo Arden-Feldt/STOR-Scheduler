@@ -1,3 +1,4 @@
+import com.gurobi.gurobi.*;
 import Course.Course;
 import Course.CourseReader;
 import Faculty.FacultyManager;
@@ -24,6 +25,8 @@ public class Main {
         test_course_impl(courseReader);
 
         // TODO: implement Gurobi java API
+        CourseScheduler courseScheduler = new CourseScheduler(preferenceReader, courseReader);
+        courseScheduler.optimize();
 
         // TODO: Run optimizer
 

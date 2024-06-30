@@ -74,4 +74,8 @@ public class PreferenceReader {
     public HashSet<Professor> getProfessors() {
         return professors;
     }
+
+    public String[] getTIMESLOTSTRINGS() {
+        return TIMESLOTSTRINGS;
+    }
 }
