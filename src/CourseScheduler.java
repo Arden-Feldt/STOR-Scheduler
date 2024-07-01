@@ -112,6 +112,34 @@ public class CourseScheduler {
                 }
             }
 
+            // 4. Each professor cannot teach three (or two) classes in a row
+            for (int j = 0; j < professors.length; j++) {
+                if (!professors[j].getBacktoBack()) {
+                    for (int k = 0; k < timeSlots.length - 1; k++) { // Adjusting the loop to ensure we do not go out of bounds
+                        GRBLinExpr backToBackExpr = new GRBLinExpr();
+                        for (int i = 0; i < courses.length; i++) {
+                            for (int r = 0; r < rooms.length; r++) {
+                                backToBackExpr.addTerm(1.0, assign[i][j][k][r]);
+                                backToBackExpr.addTerm(1.0, assign[i][j][k + 1][r]);
+                            }
+                        }
+                        model.addConstr(backToBackExpr, GRB.LESS_EQUAL, 1.0, "BackToBack_" + professors[j].getName() + "_Starting_" + timeSlots[k]);
+                    }
+                } else {
+                    for (int k = 0; k < timeSlots.length - 2; k++) { // Adjusting the loop to ensure we do not go out of bounds
+                        GRBLinExpr consecutiveClassesExpr = new GRBLinExpr();
+                        for (int i = 0; i < courses.length; i++) {
+                            for (int r = 0; r < rooms.length; r++) {
+                                consecutiveClassesExpr.addTerm(1.0, assign[i][j][k][r]);
+                                consecutiveClassesExpr.addTerm(1.0, assign[i][j][k + 1][r]);
+                                consecutiveClassesExpr.addTerm(1.0, assign[i][j][k + 2][r]);
+                            }
+                        }
+                        model.addConstr(consecutiveClassesExpr, GRB.LESS_EQUAL, 2.0, "Consecutive_Classes_" + professors[j].getName() + "_Starting_" + timeSlots[k]);
+                    }
+                }
+            }
+
             // Optimize the model
             model.optimize();
 
