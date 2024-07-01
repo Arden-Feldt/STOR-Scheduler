@@ -2,7 +2,6 @@ package Course;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public enum TimeSlot {
     MWF800850(),MWF905955,MWF10101100,MWF11151205,MWF1220110,MWF125215,MWF230320,MWF545635,

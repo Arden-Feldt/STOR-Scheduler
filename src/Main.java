@@ -1,3 +1,4 @@
+import ScheduleData.CourseUpdater;
 import com.gurobi.gurobi.*;
 import Course.Course;
 import Course.CourseReader;
@@ -24,13 +25,17 @@ public class Main {
         courseReader.buildCourses();
         test_course_impl(courseReader);
 
-        // TODO: implement Gurobi java API
-        CourseScheduler courseScheduler = new CourseScheduler(preferenceReader, courseReader);
+        // init optimizer
+        CourseScheduler courseScheduler = new CourseScheduler(preferenceReader, courseReader, "src/ScheduleData/course_schedule.csv");
+        // Run Optimizer
         courseScheduler.optimize();
 
-        // TODO: Run optimizer
-
         // TODO: output optimal solution in legible format
+        test_course_impl(courseReader);
+        CourseUpdater courseUpdater = new CourseUpdater(courseScheduler.getOutput_path(), courseReader);
+        courseUpdater.updateCourses();
+        test_course_impl(courseReader);
+
 
 
     }
@@ -51,7 +56,10 @@ public class Main {
         HashSet<Course> courses = courseReader.getCourses();
 
         for (Course course: courses){
-            System.out.println(course.getName() + ", with: " + course.getFaculty() + course.getTotalStudents());
+            System.out.println(course.getName() +
+                    ", with: " + course.getFaculty() +
+                    " in " + course.getRoom() +
+                    " at " + course.getTime());
 
         }
     }

@@ -14,12 +14,14 @@ public class CourseScheduler {
     private Professor[] professors;
     private Room[] rooms;
     public String[] timeSlots;
+    private String output_path;
 
-    public CourseScheduler(PreferenceReader preferenceReader, CourseReader courseReader) {
+    public CourseScheduler(PreferenceReader preferenceReader, CourseReader courseReader, String output_path) {
         this.courses = courseReader.getCourses().toArray(new Course[0]);
         this.professors = preferenceReader.getProfessors().toArray(new Professor[0]);
         this.timeSlots = preferenceReader.getTIMESLOTSTRINGS();
         this.rooms = Room.values();
+        this.output_path = output_path;
     }
 
     public void optimize() {
@@ -147,7 +149,7 @@ public class CourseScheduler {
             model.optimize();
 
             // Print and save results to CSV
-            FileWriter csvWriter = new FileWriter("src/ScheduleData/course_schedule.csv");
+            FileWriter csvWriter = new FileWriter(output_path);
             csvWriter.append("Course,Professor,TimeSlot,Room\n");
 
             for (int i = 0; i < courses.length; i++) {
@@ -185,5 +187,7 @@ public class CourseScheduler {
         }
     }
 
-
+    public String getOutput_path() {
+        return output_path;
+    }
 }
