@@ -6,6 +6,9 @@ import Faculty.PreferenceReader;
 import Faculty.Professor;
 import com.gurobi.gurobi.*;
 
+import java.io.FileWriter;
+import java.io.IOException;
+
 public class CourseScheduler {
     private Course[] courses;
     private Professor[] professors;
@@ -143,18 +146,33 @@ public class CourseScheduler {
             // Optimize the model
             model.optimize();
 
-            // Print results
+            // Print and save results to CSV
+            FileWriter csvWriter = new FileWriter("src/ScheduleData/course_schedule.csv");
+            csvWriter.append("Course,Professor,TimeSlot,Room\n");
+
             for (int i = 0; i < courses.length; i++) {
                 for (int j = 0; j < professors.length; j++) {
                     for (int k = 0; k < timeSlots.length; k++) {
                         for (int r = 0; r < rooms.length; r++) {
                             if (assign[i][j][k][r].get(GRB.DoubleAttr.X) > 0.5) {
-                                System.out.println("Assign " + courses[i].getName() + " to " + professors[j].getName() + " at " + timeSlots[k] + " in " + rooms[r].name());
+                                String result = "Assign " + courses[i].getName() + " to " + professors[j].getName() + " at " + timeSlots[k] + " in " + rooms[r].name();
+                                System.out.println(result);
+                                csvWriter.append(courses[i].getName())
+                                        .append(",")
+                                        .append(professors[j].getName())
+                                        .append(",")
+                                        .append(timeSlots[k])
+                                        .append(",")
+                                        .append(rooms[r].name())
+                                        .append("\n");
                             }
                         }
                     }
                 }
             }
+
+            csvWriter.flush();
+            csvWriter.close();
 
             // Dispose of model and environment
             model.dispose();
@@ -162,6 +180,8 @@ public class CourseScheduler {
 
         } catch (GRBException e) {
             System.out.println("Error code: " + e.getErrorCode() + ". " + e.getMessage());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 }
