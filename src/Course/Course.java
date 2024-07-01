@@ -34,4 +34,12 @@ public class Course{
     public int getTotalStudents() {
         return totalStudents;
     }
+
+    public void setTimeSlot(TimeSlot time) {
+        this.time = time;
+    }
+
+    public void setRoom(Room room) {
+        this.room = room;
+    }
 }
