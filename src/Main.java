@@ -14,6 +14,8 @@ import java.util.HashSet;
 public class Main {
     public static void main(String[] args) {
 
+        // TODO: ADD TESTS
+
         PreferenceReader preferenceReader = new PreferenceReader("src/ProfessorData/ProPrefFalls23.csv");
         preferenceReader.buildProfessors();
         test_prof_impl(preferenceReader);
@@ -30,7 +32,6 @@ public class Main {
         // Run Optimizer
         courseScheduler.optimize();
 
-        // TODO: output optimal solution in legible format
         test_course_impl(courseReader);
         CourseUpdater courseUpdater = new CourseUpdater(courseScheduler.getOutput_path(), courseReader);
         courseUpdater.updateCourses();
@@ -38,13 +39,6 @@ public class Main {
 
         ScheduleDisplayer scheduleDisplayer = new ScheduleDisplayer("src/ScheduleData/legible_schedule.csv");
         scheduleDisplayer.save_schedule(courseReader.getCourses());
-
-        //courseUpdater.printCourses();
-        //System.out.println("-=-=-=-=-=-=-=-=-");
-        //courseReader.printCourses();
-
-
-
     }
 
     public static void test_prof_impl(PreferenceReader preferenceReader){
