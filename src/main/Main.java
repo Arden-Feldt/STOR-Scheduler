@@ -1,5 +1,6 @@
 package main;
 
+import main.Course.CourseManager;
 import main.ScheduleData.CourseUpdater;
 import main.Course.Course;
 import main.Course.CourseReader;
@@ -18,52 +19,21 @@ public class Main {
 
         // TODO: ADD TESTS
 
-        PreferenceReader preferenceReader = new PreferenceReader("src/main/ProfessorData/ProPrefFalls23.csv");
-        preferenceReader.buildProfessors();
-        test_prof_impl(preferenceReader);
+        Builder builder = new Builder();
+        builder.readDataIn("src/main/ProfessorData/ProPrefFalls23.csv", "src/main/ProfessorData/TeachingAssignmentsFall.csv");
 
-        FacultyManager facultyManager = new FacultyManager(preferenceReader.getProfessors());
 
-        CourseReader courseReader = new CourseReader("src/main/ProfessorData/TeachingAssignmentsFall.csv",
-                facultyManager);
-        courseReader.buildCourses();
-        test_course_impl(courseReader);
+        CourseManager courseManager = new CourseManager(builder.getCourseReader().getCourses());
 
         // init optimizer
-        CourseScheduler courseScheduler = new CourseScheduler(preferenceReader, courseReader, "src/main/ScheduleData/course_schedule.csv");
+        CourseScheduler courseScheduler = new CourseScheduler(builder.getFacultyManager(), courseManager, "src/main/ScheduleData/course_schedule.csv");
         // Run Optimizer
         courseScheduler.optimize();
 
-        test_course_impl(courseReader);
-        CourseUpdater courseUpdater = new CourseUpdater(courseScheduler.getOutput_path(), courseReader);
+        CourseUpdater courseUpdater = new CourseUpdater(courseScheduler.getOutput_path(), courseManager);
         courseUpdater.updateCourses();
-        test_course_impl(courseReader);
 
-        ScheduleDisplayer scheduleDisplayer = new ScheduleDisplayer("src/main/ScheduleData/legible_schedule.csv");
-        scheduleDisplayer.save_schedule(courseReader.getCourses());
-    }
-
-    public static void test_prof_impl(PreferenceReader preferenceReader){
-        HashSet<Professor> professors = preferenceReader.getProfessors();
-
-        for (Professor professor: professors){
-            System.out.println(professor.toString() +
-                    Arrays.toString(professor.getWillingness()) +
-                    professor.getBacktoBack() +
-                    professor.getGetsOpinion());
-
-        }
-    }
-
-    public static void test_course_impl(CourseReader courseReader){
-        HashSet<Course> courses = courseReader.getCourses();
-
-        for (Course course: courses){
-            System.out.println(course.getName() +
-                    ", with: " + course.getFaculty() +
-                    " in " + course.getRoom() +
-                    " at " + course.getTimeSlot());
-
-        }
+        ScheduleDisplayer scheduleDisplayer = new ScheduleDisplayer("src/main/ScheduleData/legible_schedule.csv", courseManager);
+        scheduleDisplayer.save_schedule();
     }
 }

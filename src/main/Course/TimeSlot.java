@@ -14,6 +14,8 @@ public enum TimeSlot {
 
     // TODO: Make sure i have the right highRequest times
 
+    // TODO: am i missing MWF 4pm??
+
     TimeSlot(boolean highRequest) {
         this.highRequest = highRequest;
     }

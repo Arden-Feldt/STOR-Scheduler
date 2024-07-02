@@ -1,23 +1,19 @@
 package main.ScheduleData;
 
-import main.Course.CourseReader;
-import main.Course.Course;
-import main.Course.Room;
+import main.Course.*;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashSet;
-import main.Course.TimeSlot;
 
 public class CourseUpdater {
     private String path;
-    private CourseReader courseReader;
     private HashSet<Course> courses;
 
-    public CourseUpdater(String path, CourseReader courseReader) {
+    public CourseUpdater(String path, CourseManager courseManager) {
         this.path = path;
-        this.courseReader = courseReader;
-        this.courses = courseReader.getCourses();
+        this.courses = courseManager.getCourses();
     }
 
     public void updateCourses() {
@@ -65,13 +61,6 @@ public class CourseUpdater {
             }
         } catch (IOException e) {
             e.printStackTrace();
-        }
-    }
-
-
-    public void printCourses(){
-        for (Course course : courses){
-            System.out.println(course.getName() + " " + course.getFaculty());
         }
     }
 }

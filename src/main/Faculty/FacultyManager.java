@@ -1,5 +1,8 @@
 package main.Faculty;
 
+import main.Course.TimeSlot;
+
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.NoSuchElementException;
 
@@ -33,5 +36,13 @@ public class FacultyManager {
             }
         }
         throw new NoSuchElementException();
+    }
+
+    public String[] getTIMESLOTSTRINGS() {
+        ArrayList<String> result = new ArrayList();
+        for (TimeSlot timeSlot : TimeSlot.values()) {
+            result.add(timeSlot.name());
+        }
+        return result.toArray(new String[0]);
     }
 }

@@ -11,11 +11,6 @@ import java.util.HashSet;
 
 public class PreferenceReader {
 
-    final String[] TIMESLOTSTRINGS = {
-            "MWF800850", "MWF905955", "MWF10101100", "MWF11151205", "MWF1220110", "MWF125215",
-            "MWF230320", "MWF545635", "TTH800915", "TTH9301045", "TTH11001215", "TTH1230145",
-            "TTH200315", "TTH330445", "TTH500615", "MW9051020", "MW11151230", "MW125240"
-    };
     private String path;
     private HashSet<Professor> professors;
 
@@ -25,6 +20,7 @@ public class PreferenceReader {
 
     public void buildProfessors(){
         this.professors = new HashSet<>();
+        String[] TIMESLOTSTRINGS = getTIMESLOTSTRINGS();
 
         try (BufferedReader br = new BufferedReader(new FileReader(path))) {
             String headerLine = br.readLine(); // Gets the header line out of the way
@@ -76,6 +72,10 @@ public class PreferenceReader {
     }
 
     public String[] getTIMESLOTSTRINGS() {
-        return TIMESLOTSTRINGS;
+        ArrayList<String> result = new ArrayList();
+        for (TimeSlot timeSlot : TimeSlot.values()) {
+            result.add(timeSlot.name());
+        }
+        return result.toArray(new String[0]);
     }
 }

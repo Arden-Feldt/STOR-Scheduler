@@ -7,18 +7,21 @@ import java.util.Map;
 import java.util.HashSet;
 
 import main.Course.Course;
+import main.Course.CourseManager;
 import main.Course.Room;
 import main.Course.TimeSlot;
 
 
 public class ScheduleDisplayer {
     private String path;
+    private HashSet<Course> courses;
 
-    public ScheduleDisplayer(String path) {
+    public ScheduleDisplayer(String path, CourseManager courseManager) {
+        this.courses = courseManager.getCourses();
         this.path = path;
     }
 
-    public void save_schedule(HashSet<Course> courses) {
+    public void save_schedule() {
         // Initialize a map to store the schedule
         Map<String, Map<Room, String>> schedule = new HashMap<>();
 

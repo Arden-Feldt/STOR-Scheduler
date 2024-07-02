@@ -1,9 +1,11 @@
 package main;
 
+import main.Course.CourseManager;
 import main.Course.CourseReader;
 import main.Course.Room;
 import main.Course.Course;
 import main.Faculty.Faculty;
+import main.Faculty.FacultyManager;
 import main.Faculty.PreferenceReader;
 import main.Faculty.Professor;
 import com.gurobi.gurobi.*;
@@ -18,10 +20,10 @@ public class CourseScheduler {
     public String[] timeSlots;
     private String output_path;
 
-    public CourseScheduler(PreferenceReader preferenceReader, CourseReader courseReader, String output_path) {
-        this.courses = courseReader.getCourses().toArray(new Course[0]);
-        this.professors = preferenceReader.getProfessors().toArray(new Professor[0]);
-        this.timeSlots = preferenceReader.getTIMESLOTSTRINGS();
+    public CourseScheduler(FacultyManager facultyManager, CourseManager courseManager, String output_path) {
+        this.courses = courseManager.getCourseArray();
+        this.professors = facultyManager.getProfessors().toArray(new Professor[0]);
+        this.timeSlots = facultyManager.getTIMESLOTSTRINGS();
         this.rooms = Room.values();
         this.output_path = output_path;
     }
