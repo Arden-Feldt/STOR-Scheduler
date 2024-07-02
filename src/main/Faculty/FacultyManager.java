@@ -1,4 +1,4 @@
-package Faculty;
+package main.Faculty;
 
 import java.util.HashSet;
 import java.util.NoSuchElementException;

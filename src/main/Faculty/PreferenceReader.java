@@ -1,7 +1,7 @@
-package Faculty;
+package main.Faculty;
 
 
-import Course.TimeSlot;
+import main.Course.TimeSlot;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

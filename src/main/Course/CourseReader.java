@@ -1,7 +1,6 @@
-package Course;
+package main.Course;
 
-import Faculty.FacultyManager;
-import Faculty.Professor;
+import main.Faculty.FacultyManager;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

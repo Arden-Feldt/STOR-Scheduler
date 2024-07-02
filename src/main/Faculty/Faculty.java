@@ -1,6 +1,6 @@
-package Faculty;
+package main.Faculty;
 
-import Course.TimeSlot;
+import main.Course.TimeSlot;
 
 import java.util.ArrayList;
 

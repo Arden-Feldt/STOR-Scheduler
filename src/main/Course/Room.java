@@ -1,4 +1,4 @@
-package Course;
+package main.Course;
 
 public enum Room {
     Hanes(100),

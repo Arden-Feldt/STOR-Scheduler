@@ -1,13 +1,13 @@
-package ScheduleData;
+package main.ScheduleData;
 
-import Course.CourseReader;
-import Course.Course;
-import Course.Room;
+import main.Course.CourseReader;
+import main.Course.Course;
+import main.Course.Room;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashSet;
-import Course.TimeSlot;
+import main.Course.TimeSlot;
 
 public class CourseUpdater {
     private String path;

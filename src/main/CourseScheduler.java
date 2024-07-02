@@ -1,9 +1,11 @@
-import Course.CourseReader;
-import Course.Room;
-import Course.Course;
-import Faculty.Faculty;
-import Faculty.PreferenceReader;
-import Faculty.Professor;
+package main;
+
+import main.Course.CourseReader;
+import main.Course.Room;
+import main.Course.Course;
+import main.Faculty.Faculty;
+import main.Faculty.PreferenceReader;
+import main.Faculty.Professor;
 import com.gurobi.gurobi.*;
 
 import java.io.FileWriter;

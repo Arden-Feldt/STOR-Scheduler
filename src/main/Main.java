@@ -1,10 +1,12 @@
-import ScheduleData.CourseUpdater;
-import Course.Course;
-import Course.CourseReader;
-import Faculty.FacultyManager;
-import Faculty.PreferenceReader;
-import Faculty.Professor;
-import ScheduleData.ScheduleDisplayer;
+package main;
+
+import main.ScheduleData.CourseUpdater;
+import main.Course.Course;
+import main.Course.CourseReader;
+import main.Faculty.FacultyManager;
+import main.Faculty.PreferenceReader;
+import main.Faculty.Professor;
+import main.ScheduleData.ScheduleDisplayer;
 
 
 import java.util.Arrays;
@@ -16,19 +18,19 @@ public class Main {
 
         // TODO: ADD TESTS
 
-        PreferenceReader preferenceReader = new PreferenceReader("src/ProfessorData/ProPrefFalls23.csv");
+        PreferenceReader preferenceReader = new PreferenceReader("src/main/ProfessorData/ProPrefFalls23.csv");
         preferenceReader.buildProfessors();
         test_prof_impl(preferenceReader);
 
         FacultyManager facultyManager = new FacultyManager(preferenceReader.getProfessors());
 
-        CourseReader courseReader = new CourseReader("src/ProfessorData/TeachingAssignmentsFall.csv",
+        CourseReader courseReader = new CourseReader("src/main/ProfessorData/TeachingAssignmentsFall.csv",
                 facultyManager);
         courseReader.buildCourses();
         test_course_impl(courseReader);
 
         // init optimizer
-        CourseScheduler courseScheduler = new CourseScheduler(preferenceReader, courseReader, "src/ScheduleData/course_schedule.csv");
+        CourseScheduler courseScheduler = new CourseScheduler(preferenceReader, courseReader, "src/main/ScheduleData/course_schedule.csv");
         // Run Optimizer
         courseScheduler.optimize();
 
@@ -37,7 +39,7 @@ public class Main {
         courseUpdater.updateCourses();
         test_course_impl(courseReader);
 
-        ScheduleDisplayer scheduleDisplayer = new ScheduleDisplayer("src/ScheduleData/legible_schedule.csv");
+        ScheduleDisplayer scheduleDisplayer = new ScheduleDisplayer("src/main/ScheduleData/legible_schedule.csv");
         scheduleDisplayer.save_schedule(courseReader.getCourses());
     }
 

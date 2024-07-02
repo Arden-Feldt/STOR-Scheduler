@@ -1,6 +1,6 @@
-package Course;
+package main.Course;
 
-import Faculty.Faculty;
+import main.Faculty.Faculty;
 
 public class Course{
     private String name;

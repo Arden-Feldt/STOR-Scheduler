@@ -1,4 +1,4 @@
-package ScheduleData;
+package main.ScheduleData;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -6,9 +6,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.HashSet;
 
-import Course.Course;
-import Course.Room;
-import Course.TimeSlot;
+import main.Course.Course;
+import main.Course.Room;
+import main.Course.TimeSlot;
 
 
 public class ScheduleDisplayer {

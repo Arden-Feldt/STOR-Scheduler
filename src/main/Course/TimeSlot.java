@@ -1,4 +1,4 @@
-package Course;
+package main.Course;
 
 import java.util.ArrayList;
 import java.util.Arrays;
