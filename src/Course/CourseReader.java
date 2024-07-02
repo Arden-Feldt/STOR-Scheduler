@@ -58,4 +58,10 @@ public class CourseReader {
     public HashSet<Course> getCourses() {
         return courses;
     }
+
+    public void printCourses(){
+        for (Course course : courses){
+            System.out.println(course.getName() + " " + course.getFaculty());
+        }
+    }
 }

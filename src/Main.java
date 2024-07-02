@@ -1,4 +1,5 @@
 import ScheduleData.CourseUpdater;
+import ScheduleData.CourseUpdater2;
 import com.gurobi.gurobi.*;
 import Course.Course;
 import Course.CourseReader;
@@ -35,6 +36,10 @@ public class Main {
         CourseUpdater courseUpdater = new CourseUpdater(courseScheduler.getOutput_path(), courseReader);
         courseUpdater.updateCourses();
         test_course_impl(courseReader);
+
+        //courseUpdater.printCourses();
+        //System.out.println("-=-=-=-=-=-=-=-=-");
+        //courseReader.printCourses();
 
 
 
