@@ -20,7 +20,7 @@ public class PreferenceReader {
 
     public void buildProfessors(){
         this.professors = new HashSet<>();
-        String[] TIMESLOTSTRINGS = getTIMESLOTSTRINGS();
+        String[] timeslotstrings = getTIMESLOTSTRINGS();
 
         try (BufferedReader br = new BufferedReader(new FileReader(path))) {
             String headerLine = br.readLine(); // Gets the header line out of the way
@@ -47,7 +47,7 @@ public class PreferenceReader {
                         try {
                             willingness[i - 3] = Integer.parseInt(value[i]); // Use Integer.parseInt
                             if (willingness[i - 3] > 0) {
-                                timeslots.add(TimeSlot.valueOf(TIMESLOTSTRINGS[i - 3]));
+                                timeslots.add(TimeSlot.valueOf(timeslotstrings[i - 3]));
                             }
                         } catch (NumberFormatException e) {
                             willingness[i - 3] = 0; // Handle invalid integer format

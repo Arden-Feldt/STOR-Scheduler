@@ -1,4 +1,4 @@
-package main.ScheduleData;
+package main.Schedule;
 
 import main.Course.*;
 

@@ -1,4 +1,4 @@
-package main.ScheduleData;
+package main.Schedule;
 
 import java.io.FileWriter;
 import java.io.IOException;

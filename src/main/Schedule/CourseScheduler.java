@@ -1,4 +1,4 @@
-package main;
+package main.Schedule;
 
 import main.Course.CourseManager;
 import main.Course.CourseReader;
