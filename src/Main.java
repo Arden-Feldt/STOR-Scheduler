@@ -1,11 +1,10 @@
 import ScheduleData.CourseUpdater;
-import ScheduleData.CourseUpdater2;
-import com.gurobi.gurobi.*;
 import Course.Course;
 import Course.CourseReader;
 import Faculty.FacultyManager;
 import Faculty.PreferenceReader;
 import Faculty.Professor;
+import ScheduleData.ScheduleDisplayer;
 
 
 import java.util.Arrays;
@@ -37,6 +36,9 @@ public class Main {
         courseUpdater.updateCourses();
         test_course_impl(courseReader);
 
+        ScheduleDisplayer scheduleDisplayer = new ScheduleDisplayer("src/ScheduleData/legible_schedule.csv");
+        scheduleDisplayer.save_schedule(courseReader.getCourses());
+
         //courseUpdater.printCourses();
         //System.out.println("-=-=-=-=-=-=-=-=-");
         //courseReader.printCourses();
@@ -64,7 +66,7 @@ public class Main {
             System.out.println(course.getName() +
                     ", with: " + course.getFaculty() +
                     " in " + course.getRoom() +
-                    " at " + course.getTime());
+                    " at " + course.getTimeSlot());
 
         }
     }

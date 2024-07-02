@@ -55,8 +55,7 @@ public class CourseUpdater {
                     // Set the timeslot and room for the course
                     try {
                         courseToUpdate.setTimeSlot(TimeSlot.valueOf(timeSlot));
-                        Room room = Room.valueOf(roomName);
-                        courseToUpdate.setRoom(room);
+                        courseToUpdate.setRoom(Room.valueOf(roomName));
                     } catch (IllegalArgumentException e) {
                         System.err.println("Invalid room name: " + roomName);
                     }

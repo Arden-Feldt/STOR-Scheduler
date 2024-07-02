@@ -27,7 +27,7 @@ public class Course{
         return room;
     }
 
-    public TimeSlot getTime() {
+    public TimeSlot getTimeSlot() {
         return time;
     }
 
