@@ -14,6 +14,8 @@ import static main.Paths.*;
 import static org.junit.Assert.assertEquals;
 
 public class CourseScheduleTests {
+
+
     @Test
     public void right_num_courses() {
         PreferenceReader preferenceReader = new PreferenceReader(PREFRENCEPATH);
@@ -46,6 +48,7 @@ public class CourseScheduleTests {
         assertEquals(initial_num_courses, firstReadNumCourses);
         assertEquals(firstReadNumCourses, updatedNumCourses);
         assertEquals(updatedNumCourses, numDisplayedCourses);
+        // assertEquals(updatedNumCourses, 44); // Double check 44 is right <3
 
         System.out.println("Num courses: " + numDisplayedCourses);
   }

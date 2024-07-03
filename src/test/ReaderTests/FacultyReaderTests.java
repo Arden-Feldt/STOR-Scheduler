@@ -1,4 +1,4 @@
-package test;
+package test.ReaderTests;
 
 import main.Course.TimeSlot;
 import main.Faculty.PreferenceReader;

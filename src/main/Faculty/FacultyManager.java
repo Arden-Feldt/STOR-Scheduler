@@ -23,7 +23,7 @@ public class FacultyManager {
 
     public boolean isProfessor(String name){
         for (Professor professor : professors){
-            if (professor.getName().equals(name)){
+            if (professor.getName().equalsIgnoreCase(name)){
                 return true;
             }
         }
@@ -32,7 +32,7 @@ public class FacultyManager {
 
     public Faculty getProfessor(String name){
         for (Professor professor : professors){
-            if (professor.getName().equals(name)){
+            if (professor.getName().equalsIgnoreCase(name)){
                 return professor;
             }
         }
