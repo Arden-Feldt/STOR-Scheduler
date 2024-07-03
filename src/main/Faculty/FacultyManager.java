@@ -1,5 +1,6 @@
 package main.Faculty;
 
+import main.Course.Course;
 import main.Course.TimeSlot;
 
 import java.util.ArrayList;
@@ -44,5 +45,13 @@ public class FacultyManager {
             result.add(timeSlot.name());
         }
         return result.toArray(new String[0]);
+    }
+
+    public int getNumProf(){
+        int i = 0;
+        for (Professor professor : professors){
+            i ++;
+        }
+        return i;
     }
 }
