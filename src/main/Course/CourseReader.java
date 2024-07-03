@@ -13,6 +13,7 @@ public class CourseReader {
     private String path;
     private FacultyManager facultyManager;
     private HashSet<Course> courses;
+    private int numCourses = 0;
 
     public CourseReader(String path, FacultyManager facultyManager){
         this.path = path;
@@ -47,6 +48,7 @@ public class CourseReader {
                     } else {
                         courses.add(new Course(row[0], facultyManager.getProfessor(field), 50));
                     }
+                    numCourses ++;
                 }
                 System.out.print(field + "\t"); // Print each field (tab-separated)
             }
@@ -62,5 +64,9 @@ public class CourseReader {
         for (Course course : courses){
             System.out.println(course.getName() + " " + course.getFaculty());
         }
+    }
+
+    public int getNumCourses(){
+        return numCourses;
     }
 }

@@ -22,4 +22,12 @@ public class CourseManager {
     public Course[] getCourseArray(){
         return courses.toArray(new Course[0]);
     }
+
+    public int getNumCourses(){
+        int i = 0;
+        for (Course course : courses){
+            i ++;
+        }
+        return i;
+    }
 }

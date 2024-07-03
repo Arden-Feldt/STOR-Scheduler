@@ -78,4 +78,8 @@ public class PreferenceReader {
         }
         return result.toArray(new String[0]);
     }
+
+    public String getPath() {
+        return path;
+    }
 }

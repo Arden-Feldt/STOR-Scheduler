@@ -10,6 +10,7 @@ import java.util.HashSet;
 public class CourseUpdater {
     private String path;
     private HashSet<Course> courses;
+    private int numCoursesUpdated = 0;
 
     public CourseUpdater(String path, CourseManager courseManager) {
         this.path = path;
@@ -52,6 +53,7 @@ public class CourseUpdater {
                     try {
                         courseToUpdate.setTimeSlot(TimeSlot.valueOf(timeSlot));
                         courseToUpdate.setRoom(Room.valueOf(roomName));
+                        numCoursesUpdated ++;
                     } catch (IllegalArgumentException e) {
                         System.err.println("Invalid room name: " + roomName);
                     }
@@ -62,5 +64,9 @@ public class CourseUpdater {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public int getNumCoursesUpdated() {
+        return numCoursesUpdated;
     }
 }

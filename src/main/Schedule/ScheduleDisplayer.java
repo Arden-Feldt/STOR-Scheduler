@@ -15,6 +15,7 @@ import main.Course.TimeSlot;
 public class ScheduleDisplayer {
     private String path;
     private HashSet<Course> courses;
+    private int numCourses = 0;
 
     public ScheduleDisplayer(String path, CourseManager courseManager) {
         this.courses = courseManager.getCourses();
@@ -63,6 +64,15 @@ public class ScheduleDisplayer {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public int getNumCourses() {
+        return -1;
+        // return numCourses;
+    }
+
+    public int getCoursesSize(){
+        return courses.size();
     }
 }
 
