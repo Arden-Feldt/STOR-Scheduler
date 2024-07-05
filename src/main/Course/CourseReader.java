@@ -1,6 +1,7 @@
 package main.Course;
 
 import main.Faculty.FacultyManager;
+import main.Faculty.Professor;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -8,6 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class CourseReader {
     private String path;
@@ -40,17 +42,23 @@ public class CourseReader {
 
         // Now `data` contains the parsed data rows as arrays of strings
         for (String[] row : data) {
-            for (String field : row) {
-                int i = 0;
-                if (facultyManager.isProfessor(field)){
-                    if (!row[1].equals("")) {
-                        courses.add(new Course(row[0], facultyManager.getProfessor(field), Integer.parseInt(row[1])));
-                    } else {
-                        courses.add(new Course(row[0], facultyManager.getProfessor(field), 50));
+            for (int i = 3; i < row.length; i++) {
+                if (facultyManager.isProfessor(row[i])){
+                    System.out.println(facultyManager.isProfessor(row[i]));
+                    int totalStudents = 50;
+                    if (!row[1].isEmpty()) {
+                        totalStudents = Integer.parseInt(row[1]);
                     }
+                    courses.add(new Course(row[0], facultyManager.getProfessor(row[i]), totalStudents));
                     numCourses ++;
+                } else if(row[i].equalsIgnoreCase("NH") || row[i].equalsIgnoreCase("DS")){ // TODO: Specific to STOR, make general
+                    Professor newProf = new Professor(row[i]);
+                    courses.add(new Course(row[0], newProf, 50));
+                    facultyManager.addProf(newProf);
+                } else {
+                    throw new NoSuchElementException("Course Reader: For class " + row[i] + ", prof not found");
                 }
-                System.out.print(field + "\t"); // Print each field (tab-separated)
+                System.out.print(row[i] + "\t"); // Print each field (tab-separated)
             }
             System.out.println(); // Move to the next line for the next row
         }

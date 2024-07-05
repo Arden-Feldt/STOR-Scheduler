@@ -54,4 +54,8 @@ public class FacultyManager {
         }
         return i;
     }
+
+    public void addProf (Professor professor) {
+        professors.add(professor);
+    }
 }

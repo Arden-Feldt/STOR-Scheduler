@@ -13,6 +13,7 @@ import static main.Paths.COURSEDATAPATH;
 import static main.Paths.PREFRENCEPATH;
 
 public class CourseReaderTests {
+    // TODO: Fix Hard coded courses
     private String[] avalibleCourses = {"113", "120", "FYL20", "151", "155", "215", "305", "315", "320", "415", "435",
             "445", "455", "471", "475", "520", "535", "555", "557", "565", "566", "612", "634", "641", "654", "664",
             "701", "702", "765", "743", "8XX", "8XX"};
