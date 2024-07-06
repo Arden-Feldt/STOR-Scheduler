@@ -4,18 +4,19 @@ import main.Course.TimeSlot;
 
 import java.util.ArrayList;
 
+import static main.Paths.NUMTIMESLOTS;
+
 public class Professor extends Faculty{
     private String name;
     private ArrayList<TimeSlot> timeSlots;
 
     private int[] willingness;
     private boolean backToBack;
-    private boolean getsOpinion;
+    private boolean getsOpinion = true;
 
     public Professor(String name){
         this.name = name;
-        this.getsOpinion = true;
-        this.willingness = new int[18];
+        this.willingness = new int[NUMTIMESLOTS];
     }
 
     public void setTimeSlots(ArrayList<TimeSlot> timeSlots) {

@@ -1,6 +1,7 @@
 package main;
 
 public class Paths {
+    public final static int NUMTIMESLOTS = 18;
 
     public final static String PREFRENCEPATH = "src/main/Faculty/ProfessorData/ProPrefFalls23.csv";
     public final static String COURSEDATAPATH = "src/main/Faculty/ProfessorData/TeachingAssignmentsFall.csv";
