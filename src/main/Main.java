@@ -13,7 +13,7 @@ public class Main {
         // TODO: ADD TESTS
 
         Builder builder = new Builder();
-        builder.readDataIn("src/main/Faculty/ProfessorData/ProPrefFalls23.csv", "src/main/Faculty/ProfessorData/TeachingAssignmentsFall.csv");
+        builder.readDataIn("src/main/Faculty/ProfessorData/ProPrefFalls23.csv", "src/main/Faculty/ProfessorData/TeachingAssignmentsWGrad.csv");
 
 
         CourseManager courseManager = new CourseManager(builder.getCourseReader().getCourses());

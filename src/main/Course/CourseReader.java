@@ -1,6 +1,7 @@
 package main.Course;
 
 import main.Faculty.FacultyManager;
+import main.Faculty.GradStudent;
 import main.Faculty.Professor;
 
 import java.io.BufferedReader;
@@ -43,9 +44,10 @@ public class CourseReader {
         // Now `data` contains the parsed data rows as arrays of strings
         for (String[] row : data) {
             for (int i = 3; i < row.length; i++) {
+                int totalStudents = 50;
                 if (facultyManager.isProfessor(row[i])){
                     System.out.println(facultyManager.isProfessor(row[i]));
-                    int totalStudents = 50;
+
                     if (!row[1].isEmpty()) {
                         totalStudents = Integer.parseInt(row[1]);
                     }
@@ -53,8 +55,12 @@ public class CourseReader {
                     numCourses ++;
                 } else if(row[i].equalsIgnoreCase("NH") || row[i].equalsIgnoreCase("DS")){ // TODO: Specific to STOR, make general
                     Professor newProf = new Professor(row[i]);
-                    courses.add(new Course(row[0], newProf, 50));
+                    courses.add(new Course(row[0], newProf, totalStudents));
                     facultyManager.addProf(newProf);
+                } else if(row[i].equalsIgnoreCase("GS")){
+                    GradStudent gradStudent = new GradStudent(row[i]);
+                    courses.add(new Course(row[0], gradStudent, totalStudents));
+                    facultyManager.addGrad(gradStudent);
                 } else {
                     throw new NoSuchElementException("Course Reader: For class " + row[i] + ", prof not found");
                 }

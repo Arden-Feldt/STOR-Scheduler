@@ -8,9 +8,13 @@ import java.util.HashSet;
 import java.util.NoSuchElementException;
 
 public class FacultyManager {
+    private HashSet<Faculty> faculty = new HashSet<>();
     private HashSet<Professor> professors;
+    private HashSet<GradStudent> gradStudents = new HashSet<>();
+
     public FacultyManager(HashSet<Professor> professors){
         this.professors = professors;
+        faculty.addAll(professors);
     }
 
     public void setProfessors(HashSet<Professor> professors) {
@@ -57,5 +61,11 @@ public class FacultyManager {
 
     public void addProf (Professor professor) {
         professors.add(professor);
+        faculty.add(professor);
+    }
+
+    public void addGrad (GradStudent gradStudent) {
+        gradStudents.add(gradStudent);
+        faculty.add(gradStudent);
     }
 }
