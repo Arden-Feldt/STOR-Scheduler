@@ -15,8 +15,13 @@ public class GradStudent extends Faculty{
 
 
     public GradStudent (String name) {
+        super(name);
         this.name = name;
         Arrays.fill(this.willingness, 10);
+    }
 
+    @Override
+    public int[] getWillingness() {
+        return willingness;
     }
 }

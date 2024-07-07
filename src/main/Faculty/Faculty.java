@@ -10,6 +10,10 @@ public class Faculty {
     private boolean backToBack;
     private boolean getsOpinion;
 
+    public Faculty (String name) {
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }
@@ -24,5 +28,9 @@ public class Faculty {
 
     public boolean getGetsOpinion() {
         return getsOpinion;
+    }
+
+    public int[] getWillingness() {
+        return getWillingness();
     }
 }

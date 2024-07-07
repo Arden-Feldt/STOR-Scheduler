@@ -7,10 +7,7 @@ import main.Faculty.Professor;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 public class CourseReader {
     private String path;
@@ -43,7 +40,7 @@ public class CourseReader {
 
         // Now `data` contains the parsed data rows as arrays of strings
         for (String[] row : data) {
-            for (int i = 3; i < row.length; i++) {
+            for (int i = 4; i < row.length; i++) {
                 int totalStudents = 50;
                 if (facultyManager.isProfessor(row[i])){
                     System.out.println(facultyManager.isProfessor(row[i]));
@@ -53,7 +50,7 @@ public class CourseReader {
                     }
                     courses.add(new Course(row[0], facultyManager.getProfessor(row[i]), totalStudents));
                     numCourses ++;
-                } else if(row[i].equalsIgnoreCase("NH") || row[i].equalsIgnoreCase("DS")){ // TODO: Specific to STOR, make general
+                } else if(row[i].equalsIgnoreCase("NH") || row[i].equalsIgnoreCase("DS") || row[i].equalsIgnoreCase("NOASSIGNMENT")){ // TODO: Specific to STOR, make general
                     Professor newProf = new Professor(row[i]);
                     courses.add(new Course(row[0], newProf, totalStudents));
                     facultyManager.addProf(newProf);
@@ -61,6 +58,8 @@ public class CourseReader {
                     GradStudent gradStudent = new GradStudent(row[i]);
                     courses.add(new Course(row[0], gradStudent, totalStudents));
                     facultyManager.addGrad(gradStudent);
+                } else if(row[i].isEmpty()){
+                    throw new NoSuchElementException("Element Empty: " + Arrays.toString(row));
                 } else {
                     throw new NoSuchElementException("Course Reader: For class " + row[i] + ", prof not found");
                 }

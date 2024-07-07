@@ -18,26 +18,7 @@ public class GradStudentInjecter {
     }
 
     public void inject(){
-        String line;
-        String delimiter = ",";
 
-        List<String[]> data = new ArrayList<>();
-
-        try (BufferedReader br = new BufferedReader(new FileReader(path))) {
-            String headerLine = br.readLine(); // Gets the header line out of the way
-
-            while ((line = br.readLine()) != null) {
-                String[] fields = line.split(delimiter);
-                data.add(fields);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        for (String[] row : data) {
-
-
-        }
     }
 
 }

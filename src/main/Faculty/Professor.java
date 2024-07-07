@@ -15,6 +15,7 @@ public class Professor extends Faculty{
     private boolean getsOpinion = true;
 
     public Professor(String name){
+        super(name);
         this.name = name;
         this.willingness = new int[NUMTIMESLOTS];
     }

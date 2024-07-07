@@ -9,24 +9,24 @@ import java.util.NoSuchElementException;
 
 public class FacultyManager {
     private HashSet<Faculty> faculty = new HashSet<>();
-    private HashSet<Professor> professors;
-    private HashSet<GradStudent> gradStudents = new HashSet<>();
+
 
     public FacultyManager(HashSet<Professor> professors){
-        this.professors = professors;
         faculty.addAll(professors);
     }
 
-    public void setProfessors(HashSet<Professor> professors) {
-        this.professors = professors;
-    }
-
     public HashSet<Professor> getProfessors() {
-        return professors;
+        HashSet<Professor> result = new HashSet<>();
+        for (Faculty facultyMember : faculty){
+            if (facultyMember instanceof Professor){
+                result.add((Professor) facultyMember);
+            }
+        }
+        return result;
     }
 
     public boolean isProfessor(String name){
-        for (Professor professor : professors){
+        for (Professor professor : getProfessors()){
             if (professor.getName().equalsIgnoreCase(name)){
                 return true;
             }
@@ -35,7 +35,7 @@ public class FacultyManager {
     }
 
     public Faculty getProfessor(String name){
-        for (Professor professor : professors){
+        for (Professor professor : getProfessors()){
             if (professor.getName().equalsIgnoreCase(name)){
                 return professor;
             }
@@ -53,19 +53,21 @@ public class FacultyManager {
 
     public int getNumProf(){
         int i = 0;
-        for (Professor professor : professors){
+        for (Professor professor : getProfessors()){
             i ++;
         }
         return i;
     }
 
     public void addProf (Professor professor) {
-        professors.add(professor);
         faculty.add(professor);
     }
 
     public void addGrad (GradStudent gradStudent) {
-        gradStudents.add(gradStudent);
         faculty.add(gradStudent);
+    }
+
+    public HashSet<Faculty> getFaculty() {
+        return faculty;
     }
 }
