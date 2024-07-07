@@ -5,6 +5,7 @@ import main.Course.Room;
 import main.Course.Course;
 import main.Faculty.Faculty;
 import main.Faculty.FacultyManager;
+import main.Faculty.GradStudent;
 import main.Faculty.Professor;
 import com.gurobi.gurobi.*;
 
@@ -76,8 +77,9 @@ public class CourseScheduler {
                 // Ensure that the course is assigned to the correct professor in one room at one time slot
                 for (int k = 0; k < timeSlots.length; k++) {
                     for (int r = 0; r < rooms.length; r++) {
-                        System.out.println("i " + i + "k " + k + "r " + r);
-                        System.out.println(professorIndex);
+                        if (!(assignedProfessor instanceof GradStudent) && rooms[r] == Room.GradStudentRoom) {
+                            continue;
+                        }
                         courseAssignmentExpr.addTerm(1.0, assign[i][professorIndex][k][r]);
                     }
                 }
@@ -108,7 +110,7 @@ public class CourseScheduler {
                 }
             }
 
-            // 3. Each professor can only teach one class per time slot
+            // 3. Each faculty can only teach one class per time slot
             for (int j = 0; j < faculty.length; j++) {
                 for (int k = 0; k < timeSlots.length; k++) {
                     GRBLinExpr professorUsageExpr = new GRBLinExpr();
@@ -149,8 +151,19 @@ public class CourseScheduler {
                 }
             }
 
+            // 5. Only GradStudents can be assigned to GradStudentRoom
+            for (int i = 0; i < courses.length; i++) {
+                for (int j = 0; j < faculty.length; j++) {
+                    if (!(faculty[j] instanceof GradStudent)) {
+                        for (int k = 0; k < timeSlots.length; k++) {
+                            model.addConstr(assign[i][j][k][Room.GradStudentRoom.ordinal()], GRB.EQUAL, 0.0, "Non_GradStudent_Cannot_Assign_" + courses[i].getName() + "_" + faculty[j].getName());
+                        }
+                    }
+                }
+            }
+
             /*
-            TODO: Add rooms for grad students before you can limit seats
+            // TODO: Add rooms for grad students before you can limit seats
             // 5. Courses must be assigned to rooms with enough seats
             for (int i = 0; i < courses.length; i++) {
                 for (int r = 0; r < rooms.length; r++) {
