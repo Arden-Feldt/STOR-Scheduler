@@ -63,13 +63,13 @@ public class CourseScheduler {
             // 1. Each course must be assigned to exactly one time slot by the assigned professor in one room
             for (int i = 0; i < courses.length; i++) {
                 GRBLinExpr courseAssignmentExpr = new GRBLinExpr();
-                Faculty assignedProfessor = courses[i].getFaculty();
-                int professorIndex = -1;
+                Faculty assignedFaculty = courses[i].getFaculty();
+                int facultyIndex = -1;
 
-                // Find the index of the assigned professor
+                // Find the index of the assigned faculty
                 for (int j = 0; j < faculty.length; j++) {
-                    if (faculty[j].equals(assignedProfessor)) {
-                        professorIndex = j;
+                    if (faculty[j].equals(assignedFaculty)) {
+                        facultyIndex = j;
                         break;
                     }
                 }
@@ -77,23 +77,33 @@ public class CourseScheduler {
                 // Ensure that the course is assigned to the correct professor in one room at one time slot
                 for (int k = 0; k < timeSlots.length; k++) {
                     for (int r = 0; r < rooms.length; r++) {
-                        if (!(assignedProfessor instanceof GradStudent) && rooms[r] == Room.GradStudentRoom) {
-                            continue;
-                        }
-                        courseAssignmentExpr.addTerm(1.0, assign[i][professorIndex][k][r]);
+                        courseAssignmentExpr.addTerm(1.0, assign[i][facultyIndex][k][r]);
                     }
                 }
                 model.addConstr(courseAssignmentExpr, GRB.EQUAL, 1.0, "Course_Assignment_" + courses[i].getName());
 
-                // Add constraints to prevent the course from being assigned to any other professor
+                // Add constraints to prevent the course from being assigned to any other faculty
                 for (int j = 0; j < faculty.length; j++) {
-                    if (j != professorIndex) {
+                    if (j != facultyIndex) {
                         for (int k = 0; k < timeSlots.length; k++) {
                             for (int r = 0; r < rooms.length; r++) {
                                 model.addConstr(assign[i][j][k][r], GRB.EQUAL, 0.0, "Course_Assignment_Constraint_" + courses[i].getName() + "_" + faculty[j].getName());
                             }
                         }
                     }
+                }
+            }
+
+            // 2. Each professor can only teach one class per time slot
+            for (int j = 0; j < faculty.length; j++) {
+                for (int k = 0; k < timeSlots.length; k++) {
+                    GRBLinExpr professorTimeSlotExpr = new GRBLinExpr();
+                    for (int i = 0; i < courses.length; i++) {
+                        for (int r = 0; r < rooms.length; r++) {
+                            professorTimeSlotExpr.addTerm(1.0, assign[i][j][k][r]);
+                        }
+                    }
+                    model.addConstr(professorTimeSlotExpr, GRB.LESS_EQUAL, 1.0, "Professor_TimeSlot_" + faculty[j].getName() + "_" + timeSlots[k]);
                 }
             }
 

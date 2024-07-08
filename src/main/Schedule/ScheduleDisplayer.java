@@ -28,6 +28,10 @@ public class ScheduleDisplayer {
 
         // Populate the schedule map with courses
         for (Course course : courses) {
+            if (course.getTimeSlot() == null) {
+                continue;
+                // throw new NullPointerException("Course has not timeslot!: " + course.getName() + " with " + course.getFaculty());
+            }
             String timeSlot = course.getTimeSlot().toString();
             Room room = course.getRoom();
             String value = course.getName() + " " + course.getFaculty().getName();
