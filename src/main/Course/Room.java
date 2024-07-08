@@ -1,12 +1,12 @@
 package main.Course;
 
 public enum Room {
-    Hanes(100),
-    Hanes1(50),
-    Hanes3(50),
-    Gardner(100),
-    H107(40),
-    GradStudentRoom(10000);
+    Hanes120(100),
+    Hanes107(50), // this is the weird one
+    Hanes130(50),
+    H125(50),
+    Gardner(100);
+    // GradStudentRoom(100);
 
     private final int numSeats;
 

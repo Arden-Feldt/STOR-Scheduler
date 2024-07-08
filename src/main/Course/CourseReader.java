@@ -42,21 +42,21 @@ public class CourseReader {
         for (String[] row : data) {
             for (int i = 4; i < row.length; i++) {
                 int totalStudents = 50;
+                int sectionStudents = 50;
                 if (facultyManager.isProfessor(row[i])){
-                    System.out.println(facultyManager.isProfessor(row[i]));
-
                     if (!row[1].isEmpty()) {
                         totalStudents = Integer.parseInt(row[1]);
+                        sectionStudents = Integer.parseInt(row[2]);
                     }
-                    courses.add(new Course(row[0], facultyManager.getProfessor(row[i]), totalStudents));
+                    courses.add(new Course(row[0], facultyManager.getProfessor(row[i]), totalStudents, sectionStudents));
                     numCourses ++;
                 } else if(row[i].equalsIgnoreCase("NH") || row[i].equalsIgnoreCase("DS") || row[i].equalsIgnoreCase("NOASSIGNMENT")){ // TODO: Specific to STOR, make general
                     Professor newProf = new Professor(row[i]);
-                    courses.add(new Course(row[0], newProf, totalStudents));
+                    courses.add(new Course(row[0], newProf, totalStudents, sectionStudents));
                     facultyManager.addProf(newProf);
                 } else if(row[i].equalsIgnoreCase("GS")){
                     GradStudent gradStudent = new GradStudent(row[i]);
-                    courses.add(new Course(row[0], gradStudent, totalStudents));
+                    courses.add(new Course(row[0], gradStudent, totalStudents, sectionStudents));
                     facultyManager.addGrad(gradStudent);
                 } else if(row[i].isEmpty()){
                     throw new NoSuchElementException("Element Empty: " + Arrays.toString(row));

@@ -6,7 +6,6 @@ import main.Course.Course;
 import main.Faculty.Faculty;
 import main.Faculty.FacultyManager;
 import main.Faculty.GradStudent;
-import main.Faculty.Professor;
 import com.gurobi.gurobi.*;
 
 import java.io.FileWriter;
@@ -161,6 +160,7 @@ public class CourseScheduler {
                 }
             }
 
+            /* TODO: Make this constraint work
             // 5. Only GradStudents can be assigned to GradStudentRoom
             for (int i = 0; i < courses.length; i++) {
                 for (int j = 0; j < faculty.length; j++) {
@@ -172,12 +172,13 @@ public class CourseScheduler {
                 }
             }
 
-            /*
-            // TODO: Add rooms for grad students before you can limit seats
-            // 5. Courses must be assigned to rooms with enough seats
+             */
+
+
+            // 6. Courses must be assigned to rooms with enough seats
             for (int i = 0; i < courses.length; i++) {
                 for (int r = 0; r < rooms.length; r++) {
-                    if (courses[i].getTotalStudents() > rooms[r].getNumSeats()) {
+                    if (courses[i].getSectionStudents() > rooms[r].getNumSeats()) {
                         for (int j = 0; j < faculty.length; j++) {
                             for (int k = 0; k < timeSlots.length; k++) {
                                 model.addConstr(assign[i][j][k][r], GRB.EQUAL, 0.0, "Room_Seats_" + courses[i].getName() + "_" + rooms[r].name());
@@ -186,7 +187,7 @@ public class CourseScheduler {
                     }
                 }
             }
-            */
+
 
             // Optimize the model
             model.optimize();

@@ -8,11 +8,13 @@ public class Course{
     private Faculty faculty;
     private Room room;
     private int totalStudents;
+    private int sectionStudents;
 
-    public Course(String name, Faculty faculty, int totalStudents){
+    public Course(String name, Faculty faculty, int totalStudents, int sectionStudents){
         this.name = name;
         this.faculty = faculty;
         this.totalStudents = totalStudents;
+        this.sectionStudents = sectionStudents;
     }
 
     public String getName() {
@@ -33,6 +35,10 @@ public class Course{
 
     public int getTotalStudents() {
         return totalStudents;
+    }
+
+    public int getSectionStudents() {
+        return sectionStudents;
     }
 
     public void setTimeSlot(TimeSlot time) {
