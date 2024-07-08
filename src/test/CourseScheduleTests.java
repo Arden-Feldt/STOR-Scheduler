@@ -4,13 +4,12 @@ import main.Course.CourseManager;
 import main.Course.CourseReader;
 import main.Faculty.FacultyManager;
 import main.Faculty.PreferenceReader;
-import main.Faculty.Professor;
 import main.Schedule.CourseScheduler;
 import main.Schedule.CourseUpdater;
 import main.Schedule.ScheduleDisplayer;
 import org.junit.Test;
 
-import static main.Paths.*;
+import static main.Defaults.*;
 import static org.junit.Assert.assertEquals;
 
 public class CourseScheduleTests {

@@ -1,11 +1,8 @@
 package main.Faculty;
 
-import main.Course.TimeSlot;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 
-import static main.Paths.NUMTIMESLOTS;
+import static main.Defaults.NUMTIMESLOTS;
 
 public class GradStudent extends Faculty{
     private String name;

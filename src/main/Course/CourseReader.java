@@ -9,6 +9,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
+import static main.Defaults.DEFAULTSECTIONSIZE;
+
 public class CourseReader {
     private String path;
     private FacultyManager facultyManager;
@@ -41,8 +43,8 @@ public class CourseReader {
         // Now `data` contains the parsed data rows as arrays of strings
         for (String[] row : data) {
             for (int i = 4; i < row.length; i++) {
-                int totalStudents = 50;
-                int sectionStudents = 50;
+                int totalStudents = 0;
+                int sectionStudents = DEFAULTSECTIONSIZE;
                 if (facultyManager.isProfessor(row[i])){
                     if (!row[1].isEmpty()) {
                         totalStudents = Integer.parseInt(row[1]);

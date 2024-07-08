@@ -4,7 +4,7 @@ import main.Course.TimeSlot;
 
 import java.util.ArrayList;
 
-import static main.Paths.NUMTIMESLOTS;
+import static main.Defaults.NUMTIMESLOTS;
 
 public class Professor extends Faculty{
     private String name;

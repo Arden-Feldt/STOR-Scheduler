@@ -5,7 +5,7 @@ import main.Schedule.CourseScheduler;
 import main.Schedule.CourseUpdater;
 import main.Schedule.ScheduleDisplayer;
 
-import static main.Paths.*;
+import static main.Defaults.*;
 
 
 public class Main {

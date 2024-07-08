@@ -4,13 +4,12 @@ import main.Course.Course;
 import main.Course.CourseReader;
 import main.Faculty.FacultyManager;
 import main.Faculty.PreferenceReader;
-import main.Main;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 
-import static main.Paths.COURSEDATAPATH;
-import static main.Paths.PREFRENCEPATH;
+import static main.Defaults.COURSEDATAPATH;
+import static main.Defaults.PREFRENCEPATH;
 
 public class CourseReaderTests {
     // TODO: Fix Hard coded courses
