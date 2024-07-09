@@ -5,8 +5,8 @@ public enum Room {
     Hanes107(50), // this is the weird one
     Hanes130(50),
     H125(50),
-    Gardner(100);
-    // GradStudentRoom(100);
+    Gardner(100),
+    GradStudentRoom(100);
 
     private final int numSeats;
 

@@ -5,8 +5,8 @@ import main.Course.Room;
 import main.Course.Course;
 import main.Faculty.Faculty;
 import main.Faculty.FacultyManager;
-import main.Faculty.GradStudent;
 import com.gurobi.gurobi.*;
+import main.Faculty.GradStudent;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -160,7 +160,6 @@ public class CourseScheduler {
                 }
             }
 
-            /* TODO: Make this constraint work
             // 5. Only GradStudents can be assigned to GradStudentRoom
             for (int i = 0; i < courses.length; i++) {
                 for (int j = 0; j < faculty.length; j++) {
@@ -171,8 +170,6 @@ public class CourseScheduler {
                     }
                 }
             }
-
-             */
 
 
             // 6. Courses must be assigned to rooms with enough seats

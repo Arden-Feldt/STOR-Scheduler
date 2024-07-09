@@ -4,8 +4,7 @@ public class Defaults {
 
     // Hard coded numbers
     public final static int NUMTIMESLOTS = 18;
-    public final static int DEFAULTSECTIONSIZE = 18;
-    public final static int DEFAULT = 18;
+    public final static int DEFAULTSECTIONSIZE = 100;
 
 
     // Paths

@@ -43,13 +43,12 @@ public class CourseReader {
         // Now `data` contains the parsed data rows as arrays of strings
         for (String[] row : data) {
             for (int i = 4; i < row.length; i++) {
-                int totalStudents = 0;
-                int sectionStudents = DEFAULTSECTIONSIZE;
+
+                int sectionStudents = initSectionSize(row[2]);
+                int totalStudents = initTotalStudents(row[1]);
+
+
                 if (facultyManager.isProfessor(row[i])){
-                    if (!row[1].isEmpty()) {
-                        totalStudents = Integer.parseInt(row[1]);
-                        sectionStudents = Integer.parseInt(row[2]);
-                    }
                     courses.add(new Course(row[0], facultyManager.getProfessor(row[i]), totalStudents, sectionStudents));
                     numCourses ++;
                 } else if(row[i].equalsIgnoreCase("NH") || row[i].equalsIgnoreCase("DS") || row[i].equalsIgnoreCase("NOASSIGNMENT")){ // TODO: Specific to STOR, make general
@@ -68,6 +67,22 @@ public class CourseReader {
                 System.out.print(row[i] + "\t"); // Print each field (tab-separated)
             }
             System.out.println(); // Move to the next line for the next row
+        }
+    }
+
+    private int initSectionSize (String section) {
+        if (section.isEmpty()){
+            return DEFAULTSECTIONSIZE;
+        } else {
+            return Integer.parseInt(section);
+        }
+    }
+
+    private int initTotalStudents (String section) {
+        if (section.isEmpty()){
+            return -1; // TODO: This is ass
+        } else {
+            return Integer.parseInt(section);
         }
     }
 
