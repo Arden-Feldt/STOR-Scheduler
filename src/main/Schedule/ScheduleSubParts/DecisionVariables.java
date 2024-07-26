@@ -12,21 +12,18 @@ import main.Faculty.FacultyManager;
 import main.Schedule.CourseScheduler;
 
 
-public class DecisionVariables extends CourseScheduler {
+public class DecisionVariables {
 
     private Course[] courses;
     private Faculty[] faculty;
     private Room[] rooms;
     private String[] timeSlots;
-    private String output_path;
 
-    public DecisionVariables(FacultyManager facultyManager, CourseManager courseManager, String output_path, Course[] courses, Faculty[] faculty, Room[] rooms, String[] timeSlots) {
-        super(facultyManager, courseManager, output_path);
+    public DecisionVariables(Course[] courses, Faculty[] faculty, Room[] rooms, String[] timeSlots) {
         this.courses = courses;
         this.faculty = faculty;
         this.rooms = rooms;
         this.timeSlots = timeSlots;
-        this.output_path = output_path;
     }
 
     public void initiate(GRBModel model, GRBVar[][][][] assign) throws GRBException {

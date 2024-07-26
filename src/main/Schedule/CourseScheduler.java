@@ -42,7 +42,7 @@ public class CourseScheduler {
 
             // Decision variables
             GRBVar[][][][] assign = new GRBVar[courses.length][faculty.length][timeSlots.length][rooms.length];
-            DecisionVariables decisionVariables = new DecisionVariables(facultyManager, courseManager, output_path, courses, faculty, rooms, timeSlots);
+            DecisionVariables decisionVariables = new DecisionVariables(courses, faculty, rooms, timeSlots);
             decisionVariables.initiate(model, assign);
 
             // Objective function: maximize willingness
