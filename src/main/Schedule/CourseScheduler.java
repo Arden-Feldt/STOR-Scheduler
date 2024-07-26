@@ -7,24 +7,32 @@ import main.Faculty.Faculty;
 import main.Faculty.FacultyManager;
 import com.gurobi.gurobi.*;
 import main.Faculty.GradStudent;
+import main.Schedule.ScheduleSubParts.DecisionVariables;
 
 import java.io.FileWriter;
 import java.io.IOException;
 
 public class CourseScheduler {
-    protected Course[] courses;
-    protected Faculty[] faculty;
-    protected Room[] rooms;
-    protected String[] timeSlots;
-    protected String output_path;
+    private FacultyManager facultyManager;
+    private  CourseManager courseManager;
+    private Course[] courses;
+    private Faculty[] faculty;
+    private Room[] rooms;
+    private String[] timeSlots;
+    private String output_path;
 
     public CourseScheduler(FacultyManager facultyManager, CourseManager courseManager, String output_path) {
+        this.facultyManager = facultyManager;
+        this.courseManager = courseManager;
+
         this.courses = courseManager.getCourseArray();
         this.faculty = facultyManager.getFaculty().toArray(new Faculty[0]);
         this.timeSlots = facultyManager.getTIMESLOTSTRINGS();
         this.rooms = Room.values();
         this.output_path = output_path;
     }
+
+
 
     public void optimize() {
         try {
@@ -34,16 +42,8 @@ public class CourseScheduler {
 
             // Decision variables
             GRBVar[][][][] assign = new GRBVar[courses.length][faculty.length][timeSlots.length][rooms.length];
-            for (int i = 0; i < courses.length; i++) {
-                for (int j = 0; j < faculty.length; j++) {
-                    for (int k = 0; k < timeSlots.length; k++) {
-                        for (int r = 0; r < rooms.length; r++) {
-                            assign[i][j][k][r] = model.addVar(0.0, 1.0, 0.0, GRB.BINARY,
-                                    "Assign_" + courses[i].getName() + "_" + faculty[j].getName() + "_" + timeSlots[k] + "_" + rooms[r].name());
-                        }
-                    }
-                }
-            }
+            DecisionVariables decisionVariables = new DecisionVariables(facultyManager, courseManager, output_path, courses, faculty, rooms, timeSlots);
+            decisionVariables.initiate(model, assign);
 
             // Objective function: maximize willingness
             GRBLinExpr expr = new GRBLinExpr();
