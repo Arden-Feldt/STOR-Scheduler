@@ -10,15 +10,13 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 public class GradStudentInjecter {
-    private String path;
-    private String outputPath;
-    public GradStudentInjecter (String path, String outputPath) {
-            this.path = path;
-            this.outputPath = outputPath;
-    }
+  private final String path;
+  private final String outputPath;
 
-    public void inject(){
+  public GradStudentInjecter(String path, String outputPath) {
+    this.path = path;
+    this.outputPath = outputPath;
+  }
 
-    }
-
+  public void inject() {}
 }

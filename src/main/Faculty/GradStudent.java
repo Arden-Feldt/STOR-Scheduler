@@ -5,10 +5,10 @@ import java.util.Arrays;
 import static main.Defaults.NUMTIMESLOTS;
 
 public class GradStudent extends Faculty{
-    private String name;
-    private boolean getsOpinion = false;
-    private boolean backToBack = true;
-    private int[] willingness = new int[NUMTIMESLOTS];
+    private final String name;
+    private final boolean getsOpinion = false;
+    private final boolean backToBack = true;
+    private final int[] willingness = new int[NUMTIMESLOTS];
 
 
     public GradStudent (String name) {

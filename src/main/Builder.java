@@ -5,36 +5,35 @@ import main.Faculty.FacultyManager;
 import main.Faculty.PreferenceReader;
 
 public class Builder {
-    private PreferenceReader preferenceReader;
-    private FacultyManager facultyManager;
-    private CourseReader courseReader;
-    public Builder(){
+  private PreferenceReader preferenceReader;
+  private FacultyManager facultyManager;
+  private CourseReader courseReader;
 
-    }
+  public Builder() {}
 
-    public void readDataIn(String prefrencesPath, String courseDataPath){
-        PreferenceReader preferenceReader = new PreferenceReader(prefrencesPath);
-        preferenceReader.buildProfessors();
+  public void readDataIn(String prefrencesPath, String courseDataPath) {
+    PreferenceReader preferenceReader = new PreferenceReader(prefrencesPath);
+    preferenceReader.buildProfessors();
 
-        FacultyManager facultyManager = new FacultyManager(preferenceReader.getProfessors());
+    FacultyManager facultyManager = new FacultyManager(preferenceReader.getProfessors());
 
-        CourseReader courseReader = new CourseReader(courseDataPath, facultyManager);
-        courseReader.buildCourses();
+    CourseReader courseReader = new CourseReader(courseDataPath, facultyManager);
+    courseReader.buildCourses();
 
-        this.preferenceReader = preferenceReader;
-        this.facultyManager = facultyManager;
-        this.courseReader = courseReader;
-    }
+    this.preferenceReader = preferenceReader;
+    this.facultyManager = facultyManager;
+    this.courseReader = courseReader;
+  }
 
-    public CourseReader getCourseReader() {
-        return courseReader;
-    }
+  public CourseReader getCourseReader() {
+    return courseReader;
+  }
 
-    public PreferenceReader getPreferenceReader() {
-        return preferenceReader;
-    }
+  public PreferenceReader getPreferenceReader() {
+    return preferenceReader;
+  }
 
-    public FacultyManager getFacultyManager() {
-        return facultyManager;
-    }
+  public FacultyManager getFacultyManager() {
+    return facultyManager;
+  }
 }

@@ -5,7 +5,7 @@ import main.Course.TimeSlot;
 import java.util.ArrayList;
 
 public class Faculty {
-    private String name;
+    private final String name;
     private ArrayList<TimeSlot> timeSlots;
     private boolean backToBack;
     private boolean getsOpinion;

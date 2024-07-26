@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 public class CourseManager {
-    private HashSet<Course> courses;
+    private final HashSet<Course> courses;
     public CourseManager(HashSet<Course> courses){
         this.courses = courses;
     }

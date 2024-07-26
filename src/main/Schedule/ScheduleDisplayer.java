@@ -13,9 +13,9 @@ import main.Course.TimeSlot;
 
 
 public class ScheduleDisplayer {
-    private String path;
-    private HashSet<Course> courses;
-    private int numCourses = 0;
+    private final String path;
+    private final HashSet<Course> courses;
+    private final int numCourses = 0;
 
     public ScheduleDisplayer(String path, CourseManager courseManager) {
         this.courses = courseManager.getCourses();
