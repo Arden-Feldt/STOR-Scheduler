@@ -12,11 +12,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class CourseScheduler {
-    private Course[] courses;
-    private Faculty[] faculty;
-    private Room[] rooms;
-    public String[] timeSlots;
-    private String output_path;
+    protected Course[] courses;
+    protected Faculty[] faculty;
+    protected Room[] rooms;
+    protected String[] timeSlots;
+    protected String output_path;
 
     public CourseScheduler(FacultyManager facultyManager, CourseManager courseManager, String output_path) {
         this.courses = courseManager.getCourseArray();
