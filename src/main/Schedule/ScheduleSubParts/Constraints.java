@@ -152,4 +152,33 @@ public class Constraints {
             }
         }
     }
+
+    // Contstraint 7: 600 level courses can't be at the same time
+    public void sixHundredOverlap(GRBModel model, GRBVar[][][][] assign) throws GRBException {
+        for (int k = 0; k < timeSlots.length; k++) {
+            for (int i = 0; i < courses.length; i++) {
+                for (int j = i + 1; j < courses.length; j++) {
+                    try{
+                        if (Integer.parseInt(courses[i].getName()) >= 600 &&
+                                Integer.parseInt(courses[i].getName()) < 700 &&
+                                Integer.parseInt(courses[j].getName()) >= 600 &&
+                                Integer.parseInt(courses[j].getName()) < 700) {
+                            GRBLinExpr expr = new GRBLinExpr();
+                            for (int r = 0; r < rooms.length; r++) {
+                                expr.addTerm(1, assign[i][0][k][r]); // TODO: IMPL index or something
+                                expr.addTerm(1, assign[j][0][k][r]);
+                            }
+                            model.addConstr(expr, GRB.LESS_EQUAL, 1, "600_level_" + courses[i].getName() + "_" + courses[j].getName() + "_" + timeSlots[k]);
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println(courses[i].getName() + " or " + courses[j].getName() + " is not an int");
+                    }
+
+                }
+            }
+        }
+    }
+
+    // Constraint 8: 600+ courses take two periods MWF
+    // Constrain9: Back to back can't make gardner to hanes
 }

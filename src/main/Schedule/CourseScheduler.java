@@ -6,7 +6,6 @@ import main.Course.Course;
 import main.Faculty.Faculty;
 import main.Faculty.FacultyManager;
 import com.gurobi.gurobi.*;
-import main.Faculty.GradStudent;
 import main.Schedule.ScheduleSubParts.Constraints;
 import main.Schedule.ScheduleSubParts.DecisionVariables;
 import main.Schedule.ScheduleSubParts.Exporter;
@@ -61,6 +60,7 @@ public class CourseScheduler {
       constraints.backToBackConstraint(model, assign);
       constraints.gradStudentRoomConstraint(model, assign);
       constraints.enoughSeatsConstraint(model, assign);
+      constraints.sixHundredOverlap(model, assign);
 
       // Optimize the model
       model.optimize();
