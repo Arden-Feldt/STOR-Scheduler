@@ -20,7 +20,7 @@ public class CourseReaderTests {
     @Test
     public void confirmAllCoursesAreScheduled() {
         boolean allCoursesRead = true;
-        PreferenceReader preferenceReader = new PreferenceReader(PREFRENCEPATH);
+        PreferenceReader preferenceReader = new PreferenceReader(PREFRENCEPATH, 3);
         preferenceReader.buildProfessors();
 
         FacultyManager facultyManager = new FacultyManager(preferenceReader.getProfessors());

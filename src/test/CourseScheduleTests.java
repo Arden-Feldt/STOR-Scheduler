@@ -17,7 +17,7 @@ public class CourseScheduleTests {
 
     @Test
     public void right_num_courses() {
-        PreferenceReader preferenceReader = new PreferenceReader(PREFRENCEPATH);
+        PreferenceReader preferenceReader = new PreferenceReader(PREFRENCEPATH, 3);
         preferenceReader.buildProfessors();
 
         FacultyManager facultyManager = new FacultyManager(preferenceReader.getProfessors());

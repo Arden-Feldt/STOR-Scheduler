@@ -9,19 +9,21 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 public class PreferenceReader {
+  private int willingnessOffset;
 
-  private final String path;
+  private final String PATH;
   private HashSet<Professor> professors;
 
-  public PreferenceReader(String path) {
-    this.path = path;
+  public PreferenceReader(String PATH, int willingnessOffset) {
+    this.PATH = PATH;
+    this.willingnessOffset = willingnessOffset;
   }
 
   public void buildProfessors() {
     this.professors = new HashSet<>();
     String[] timeslotstrings = getTIMESLOTSTRINGS();
 
-    try (BufferedReader br = new BufferedReader(new FileReader(path))) {
+    try (BufferedReader br = new BufferedReader(new FileReader(PATH))) {
       String headerLine = br.readLine(); // Gets the header line out of the way
 
       String line;
@@ -36,15 +38,17 @@ public class PreferenceReader {
 
         // Build body for friends
         ArrayList<TimeSlot> timeslots = new ArrayList<>();
-        int[] willingness = new int[15]; // TODO: Remove hardcoding
+        int[] willingness = new int[TimeSlot.getNumTimeSlots()];
 
-        for (int i = 3; i <= 17; i++) { // TODO: Remove hardcoding
+        for (int i = willingnessOffset; i <= willingnessOffset + TimeSlot.getNumTimeSlots() - 1; i++) { // TODO: Remove hardcoding
           if (value[i].isEmpty() || value[i] == null) {
             willingness[i - 3] = 0;
           } else {
             try {
               willingness[i - 3] = Integer.parseInt(value[i]); // Use Integer.parseInt
               if (willingness[i - 3] > 0) {
+                timeslots.add(TimeSlot.valueOf(timeslotstrings[i - 3]));
+              } else {
                 timeslots.add(TimeSlot.valueOf(timeslotstrings[i - 3]));
               }
             } catch (NumberFormatException e) {
@@ -75,6 +79,6 @@ public class PreferenceReader {
   }
 
   public String getPath() {
-    return path;
+    return PATH;
   }
 }

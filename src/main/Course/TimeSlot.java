@@ -37,4 +37,8 @@ public enum TimeSlot {
   public static ArrayList<TimeSlot> getAllTimeSlots() {
     return new ArrayList<>(Arrays.asList(TimeSlot.values()));
   }
+
+  public static int getNumTimeSlots () {
+    return getAllTimeSlots().size();
+  }
 }

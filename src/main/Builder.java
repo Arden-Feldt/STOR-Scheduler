@@ -12,7 +12,7 @@ public class Builder {
   public Builder() {}
 
   public void readDataIn(String prefrencesPath, String courseDataPath) {
-    PreferenceReader preferenceReader = new PreferenceReader(prefrencesPath);
+    PreferenceReader preferenceReader = new PreferenceReader(prefrencesPath, 3);
     preferenceReader.buildProfessors();
 
     FacultyManager facultyManager = new FacultyManager(preferenceReader.getProfessors());

@@ -180,5 +180,25 @@ public class Constraints {
     }
 
     // Constraint 8: 600+ courses take two periods MWF
+    public void gradClassesDoublePeriod(GRBModel model, GRBVar[][][][] assign) throws GRBException {
+        for (int i = 0; i < courses.length; i++) {
+            try{
+                if (Integer.parseInt(courses[i].getName()) >= 600) {
+                    for (int k = 0; k < timeSlots.length - 1; k++) {
+                        for (int j = 0; j < faculty.length; j++) {
+                            for (int r = 0; r < rooms.length; r++) {
+                                // Ensure if the course is scheduled at time slot k, it must also be scheduled at time slot k+1
+                                model.addConstr(assign[i][j][k][r], GRB.EQUAL, assign[i][j][k + 1][r],
+                                        "600_level_double_timeslot_" + courses[i].getName() + "_" + timeSlots[k]);
+                            }
+                        }
+                    }
+            }
+            } catch (NumberFormatException e){
+                System.out.println(courses[i].getName() + " is not an int");
+            }
+        }
+    }
+
     // Constrain9: Back to back can't make gardner to hanes
 }
