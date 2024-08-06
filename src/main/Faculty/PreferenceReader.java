@@ -36,9 +36,9 @@ public class PreferenceReader {
 
         // Build body for friends
         ArrayList<TimeSlot> timeslots = new ArrayList<>();
-        int[] willingness = new int[18];
+        int[] willingness = new int[15]; // TODO: Remove hardcoding
 
-        for (int i = 3; i <= 20; i++) {
+        for (int i = 3; i <= 17; i++) { // TODO: Remove hardcoding
           if (value[i].isEmpty() || value[i] == null) {
             willingness[i - 3] = 0;
           } else {

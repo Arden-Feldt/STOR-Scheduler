@@ -18,10 +18,7 @@ public enum TimeSlot {
   TTH1230145(true),
   TTH200315(true),
   TTH330445,
-  TTH500615,
-  MW9051020,
-  MW11151230,
-  MW125240;
+  TTH500615;
 
   private final boolean highRequest;
 
