@@ -179,7 +179,7 @@ public class Constraints {
         }
     }
 
-    // Constraint 8: 600+ courses take two periods MWF
+    // Constraint 8: 600+ courses take two periods MWF TODO: ensure it works
     public void gradClassesDoublePeriod(GRBModel model, GRBVar[][][][] assign) throws GRBException {
         for (int i = 0; i < courses.length; i++) {
             try{
@@ -200,5 +200,41 @@ public class Constraints {
         }
     }
 
-    // Constrain9: Back to back can't make gardner to hanes
+    // Constrain9: Back to back can't make gardner to hanes TODO: ensure it works
+    public void gardnerToHanes(GRBModel model, GRBVar[][][][] assign) throws GRBException {
+        // 6. If a professor teaches a class in Gardner, any back-to-back class must also be in Gardner
+        for (int j = 0; j < faculty.length; j++) { // Iterate over each professor
+                for (int k = 0; k < timeSlots.length - 1; k++) { // Iterate over time slots (except the last one)
+                    for (int i = 0; i < courses.length; i++) { // Iterate over each course
+                        GRBLinExpr gardnerBackToBackExpr = new GRBLinExpr();
+
+                        // If a professor teaches in Gardner at time slot k
+                        gardnerBackToBackExpr.addTerm(1.0, assign[i][j][k][Room.Gardner.ordinal()]);
+
+                        // If the professor teaches any class at time slot k+1, it must also be in Gardner
+                        for (int r = 0; r < rooms.length; r++) {
+                            if (r != Room.Gardner.ordinal()) {
+                                gardnerBackToBackExpr.addTerm(1.0, assign[i][j][k + 1][r]);
+                            }
+                        }
+
+                        model.addConstr(gardnerBackToBackExpr, GRB.LESS_EQUAL, 1.0, "Gardner_BackToBack_" + faculty[j].getName() + "_Time_" + timeSlots[k]);
+
+                        // If a professor teaches a class in the room Gardner and one not in Gardner consecutively, prevent this.
+                        GRBLinExpr nonGardnerBackToBackExpr = new GRBLinExpr();
+
+                        // If a professor teaches in Gardner at time slot k, and any non-Gardner class at k+1
+                        nonGardnerBackToBackExpr.addTerm(1.0, assign[i][j][k][Room.Gardner.ordinal()]);
+
+                        for (int r = 0; r < rooms.length; r++) {
+                            if (r != Room.Gardner.ordinal()) {
+                                nonGardnerBackToBackExpr.addTerm(-1.0, assign[i][j][k + 1][r]);
+                            }
+                        }
+
+                        model.addConstr(nonGardnerBackToBackExpr, GRB.LESS_EQUAL, 0.0, "Non_Gardner_BackToBack_" + faculty[j].getName() + "_Time_" + timeSlots[k]);
+                    }
+                }
+            }
+    }
 }
