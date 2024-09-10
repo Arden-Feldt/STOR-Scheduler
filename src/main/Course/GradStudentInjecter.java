@@ -20,6 +20,7 @@ public class GradStudentInjecter {
   }
 
   public void inject() {
+    // testing git push
     try {
       throw new Exception("bazinga");
     } catch (IOException e) {
