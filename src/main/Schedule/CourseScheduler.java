@@ -61,7 +61,7 @@ public class CourseScheduler {
       constraints.gradStudentRoomConstraint(model, assign);
       constraints.enoughSeatsConstraint(model, assign);
       constraints.sixHundredOverlap(model, assign);
-      constraints.gradClassesDoublePeriod(model, assign);
+      //constraints.blockNextTimeSlotForGradCoursesAllDays(model, assign);
 
       // Optimize the model
       model.optimize();

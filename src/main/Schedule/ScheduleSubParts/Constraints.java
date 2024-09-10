@@ -154,51 +154,56 @@ public class Constraints {
     }
 
     // Contstraint 7: 600 level courses can't be at the same time
+    // TODO: this doesnt work
     public void sixHundredOverlap(GRBModel model, GRBVar[][][][] assign) throws GRBException {
         for (int k = 0; k < timeSlots.length; k++) {
             for (int i = 0; i < courses.length; i++) {
-                for (int j = i + 1; j < courses.length; j++) {
+                for (int j = i + 1; j < faculty.length; j++) {
+                    for (int r = 0; r < rooms.length; r++) {
                     try{
+                        GRBLinExpr expr = new GRBLinExpr();
                         if (Integer.parseInt(courses[i].getName()) >= 600 &&
                                 Integer.parseInt(courses[i].getName()) < 700 &&
                                 Integer.parseInt(courses[j].getName()) >= 600 &&
                                 Integer.parseInt(courses[j].getName()) < 700) {
-                            GRBLinExpr expr = new GRBLinExpr();
-                            for (int r = 0; r < rooms.length; r++) {
+
                                 expr.addTerm(1, assign[i][0][k][r]); // TODO: IMPL index or something
                                 expr.addTerm(1, assign[j][0][k][r]);
                             }
                             model.addConstr(expr, GRB.LESS_EQUAL, 1, "600_level_" + courses[i].getName() + "_" + courses[j].getName() + "_" + timeSlots[k]);
-                        }
                     } catch (NumberFormatException e) {
                         System.out.println(courses[i].getName() + " or " + courses[j].getName() + " is not an int");
                     }
 
                 }
             }
-        }
+        }}
     }
 
-    // Constraint 8: 600+ courses take two periods MWF TODO: ensure it works
-    public void gradClassesDoublePeriod(GRBModel model, GRBVar[][][][] assign) throws GRBException {
+    // Constraint 8: 600+ courses take two periods MWF
+    // TODO: this effects tuesday thursday classes
+    // TODO: this is still broken
+    public void blockNextTimeSlotForGradCoursesAllDays(GRBModel model, GRBVar[][][][] assign) throws GRBException {
         for (int i = 0; i < courses.length; i++) {
-            try{
+            try {
+                // Only for courses that are graduate level (600 and above)
                 if (Integer.parseInt(courses[i].getName()) >= 600) {
-                    for (int k = 0; k < timeSlots.length - 1; k++) {
+                    for (int k = 0; k < timeSlots.length - 1; k++) {  // Leave out the last time slot
                         for (int j = 0; j < faculty.length; j++) {
                             for (int r = 0; r < rooms.length; r++) {
-                                // Ensure if the course is scheduled at time slot k, it must also be scheduled at time slot k+1
-                                model.addConstr(assign[i][j][k][r], GRB.EQUAL, assign[i][j][k + 1][r],
-                                        "600_level_double_timeslot_" + courses[i].getName() + "_" + timeSlots[k]);
+                                // If the course is scheduled at time slot k, the next time slot (k+1) should not be scheduled
+                                model.addConstr(assign[i][j][k][r], GRB.EQUAL, 1.0, "Course_Assigned_" + courses[i].getName() + "_Timeslot_" + timeSlots[k]);
+                                model.addConstr(assign[i][j][k + 1][r], GRB.EQUAL, 0.0, "Block_Next_Timeslot_" + courses[i].getName() + "_After_" + timeSlots[k]);
                             }
                         }
                     }
-            }
-            } catch (NumberFormatException e){
+                }
+            } catch (NumberFormatException e) {
                 System.out.println(courses[i].getName() + " is not an int");
             }
         }
     }
+
 
     // Constrain9: Back to back can't make gardner to hanes TODO: ensure it works
     public void gardnerToHanes(GRBModel model, GRBVar[][][][] assign) throws GRBException {
