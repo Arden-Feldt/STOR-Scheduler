@@ -8,8 +8,10 @@ public class Defaults {
 
   // Paths
 
-  public static final String PREFRENCEPATH = "src/main/Faculty/ProfessorData/ProPrefFalls23 - Copy.csv";
-  public static final String COURSEDATAPATH = "src/main/Faculty/ProfessorData/TeachingAssignmentsWGrad.csv";
+  public static final String PREFRENCEPATH =
+      "C:\\Users\\ethan\\IdeaProjects\\STORSchedular\\src\\main\\Faculty\\ProfessorData\\2025\\timePref25.csv";
+  public static final String COURSEDATAPATH =
+      "C:\\Users\\ethan\\IdeaProjects\\STORSchedular\\src\\main\\Faculty\\ProfessorData\\2025\\classAssignments25.csv";
   public static final String RAWSCHEDULEPATH = "src/main/Schedule/course_schedule.csv";
   public static final String DISPLAYSCHEDULECSVPATH = "src/main/Schedule/legible_schedule.csv";
 }
