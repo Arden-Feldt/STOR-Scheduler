@@ -30,6 +30,8 @@ public class ObjectiveFunction {
                 }
             }
         }
-        model.setObjective(expr, GRB.MAXIMIZE);
+
+        // TODO: YOU SET THIS TO MIN BE CAREFUL
+        model.setObjective(expr, GRB.MINIMIZE);
     }
 }
