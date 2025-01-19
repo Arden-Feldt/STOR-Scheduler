@@ -10,6 +10,7 @@ import main.Schedule.ScheduleSubParts.Constraints;
 import main.Schedule.ScheduleSubParts.DecisionVariables;
 import main.Schedule.ScheduleSubParts.Exporter;
 import main.Schedule.ScheduleSubParts.ObjectiveFunction;
+import main.Schedule.ScheduleSubParts.slackVariables.gradConflicts;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -51,7 +52,12 @@ public class CourseScheduler {
       // Objective function: maximize willingness
       ObjectiveFunction objectiveFunction =
           new ObjectiveFunction(courses, faculty, rooms, timeSlots);
-      objectiveFunction.initFunction(model, assign);
+
+      objectiveFunction.initFunction(
+              model,
+              assign,
+              100.0 // Example penalty factor
+      );
 
       // Constraints: course assignment, professor availability, room availability, etc.
       Constraints constraints = new Constraints(courses, faculty, rooms, timeSlots);
@@ -61,11 +67,13 @@ public class CourseScheduler {
       constraints.gradStudentRoomConstraint(model, assign);
       constraints.enoughSeatsConstraint(model, assign);
       constraints.sixHundredOverlap(model, assign);
-      // TODO: Fix grad block
-      //constraints.blockNextTimeSlotForGradCoursesAllDays(model, assign);
 
       // Optimize the model
       model.optimize();
+      if (model.get(GRB.IntAttr.Status) == GRB.Status.OPTIMAL) {
+        int actualConflicts = gradConflicts.calculateConflicts(assign, courses, faculty, timeSlots, rooms);
+        System.out.println("Total conflicts in solution: " + actualConflicts);
+      }
 
       // Print and save results to CSV
       Exporter exporter = new Exporter(courses, faculty, rooms, timeSlots, output_path);

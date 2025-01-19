@@ -48,4 +48,14 @@ public class Course {
   public void setRoom(Room room) {
     this.room = room;
   }
+
+  public boolean isGraduateCourse() {
+    try {
+      int courseNumber = Integer.parseInt(this.name);
+      return courseNumber >= 600 && courseNumber < 700;
+    } catch (NumberFormatException e) {
+      System.out.println(this.name + " is not a valid course number");
+      return false;
+    }
+  }
 }
