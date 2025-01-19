@@ -43,7 +43,7 @@ public class ObjectiveFunction {
         for (int i = 0; i < courses.length; i++) {
           for (int j = i + 1; j < courses.length; j++) {
             // Graduate-level course check
-            if ((courses[i].isGraduateCourse() ) && courses[i].isGraduateCourse()) {
+            if ((courses[i].isGraduateCourse() ) && courses[j].isGraduateCourse()) {
               for (int r1 = 0; r1 < rooms.length; r1++) {
                 for (int r2 = 0; r2 < rooms.length; r2++) {
                   // Add penalty for scheduling conflicts

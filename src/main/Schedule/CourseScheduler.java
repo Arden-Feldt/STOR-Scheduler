@@ -10,16 +10,12 @@ import main.Schedule.ScheduleSubParts.Constraints;
 import main.Schedule.ScheduleSubParts.DecisionVariables;
 import main.Schedule.ScheduleSubParts.Exporter;
 import main.Schedule.ScheduleSubParts.ObjectiveFunction;
-import main.Schedule.ScheduleSubParts.slackVariables.gradConflicts;
 
-import java.io.FileWriter;
 import java.io.IOException;
 
 import static main.Defaults.GRADOVERLAPPENALTY;
 
 public class CourseScheduler {
-  private final FacultyManager facultyManager;
-  private final CourseManager courseManager;
   private final Course[] courses;
   private final Faculty[] faculty;
   private final Room[] rooms;
@@ -28,8 +24,6 @@ public class CourseScheduler {
 
   public CourseScheduler(
       FacultyManager facultyManager, CourseManager courseManager, String output_path) {
-    this.facultyManager = facultyManager;
-    this.courseManager = courseManager;
 
     this.courses = courseManager.getCourseArray();
     this.faculty = facultyManager.getFaculty().toArray(new Faculty[0]);
@@ -72,10 +66,6 @@ public class CourseScheduler {
 
       // Optimize the model
       model.optimize();
-      if (model.get(GRB.IntAttr.Status) == GRB.Status.OPTIMAL) {
-        int actualConflicts = gradConflicts.calculateConflicts(assign, courses, faculty, timeSlots, rooms);
-        System.out.println("Total conflicts in solution: " + actualConflicts);
-      }
 
       // Print and save results to CSV
       Exporter exporter = new Exporter(courses, faculty, rooms, timeSlots, output_path);
