@@ -15,6 +15,8 @@ import main.Schedule.ScheduleSubParts.slackVariables.gradConflicts;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import static main.Defaults.GRADOVERLAPPENALTY;
+
 public class CourseScheduler {
   private final FacultyManager facultyManager;
   private final CourseManager courseManager;
@@ -56,7 +58,7 @@ public class CourseScheduler {
       objectiveFunction.initFunction(
               model,
               assign,
-              100.0 // Example penalty factor
+              GRADOVERLAPPENALTY // Gradstudent overlap penality
       );
 
       // Constraints: course assignment, professor availability, room availability, etc.
