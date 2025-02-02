@@ -43,7 +43,7 @@ public class CourseScheduler {
           new GRBVar[courses.length][faculty.length][timeSlots.length][rooms.length];
       DecisionVariables decisionVariables =
           new DecisionVariables(courses, faculty, rooms, timeSlots);
-      decisionVariables.initiate(model, assign);
+      decisionVariables.initiate(model);
 
       // Objective function: maximize willingness
       ObjectiveFunction objectiveFunction =
@@ -52,7 +52,7 @@ public class CourseScheduler {
       objectiveFunction.initFunction(
               model,
               assign,
-              GRADOVERLAPPENALTY // Gradstudent overlap penality
+              decisionVariables.getGradCount()
       );
 
       // Constraints: course assignment, professor availability, room availability, etc.

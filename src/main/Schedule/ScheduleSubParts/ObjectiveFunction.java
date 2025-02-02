@@ -5,6 +5,8 @@ import main.Course.Course;
 import main.Course.Room;
 import main.Faculty.Faculty;
 
+import static main.Defaults.GRADOVERLAPPENALTY;
+
 public class ObjectiveFunction {
 
   private final Course[] courses;
@@ -20,13 +22,14 @@ public class ObjectiveFunction {
   }
 
   public void initFunction(
-      GRBModel model, GRBVar[][][][] assign, double penaltyFactor)
+      GRBModel model, GRBVar[][][][] assign, GRBVar[] gradCount)
       throws GRBException {
     try {
 
       GRBLinExpr expr = new GRBLinExpr();
       GRBLinExpr objective = new GRBLinExpr();
 
+      // Add terms for assigning courses to time slots and rooms
       for (int i = 0; i < courses.length; i++) {
         for (int j = 0; j < faculty.length; j++) {
           for (int k = 0; k < timeSlots.length; k++) {
@@ -37,25 +40,16 @@ public class ObjectiveFunction {
         }
       }
 
-      // Add penalty for graduate conflicts
-      // Add conflict penalties
+      // Add terms for grad_count (slack variables) to penalize more graduate-level courses
       for (int k = 0; k < timeSlots.length; k++) {
-        for (int i = 0; i < courses.length; i++) {
-          for (int j = i + 1; j < courses.length; j++) {
-            // Graduate-level course check
-            if ((courses[i].isGraduateCourse() ) && courses[j].isGraduateCourse()) {
-              for (int r1 = 0; r1 < rooms.length; r1++) {
-                for (int r2 = 0; r2 < rooms.length; r2++) {
-                  // Add penalty for scheduling conflicts
-                  objective.addTerm(penaltyFactor, assign[i][k][k][r1]); // Variable for course i
-                  objective.addTerm(penaltyFactor, assign[j][k][k][r2]); // Variable for course j
-                }
-              }
-            }
-          }
-        }
+        // You can apply a penalty term to the grad_count variable to penalize the number of grad courses
+        objective.addTerm(GRADOVERLAPPENALTY, gradCount[k]);
       }
-      // TODO: YOU SET THIS TO MIN BE CAREFUL
+
+      if (assign == null || gradCount == null) {
+        throw new IllegalArgumentException("Assign or gradCount is null.");
+      }
+
       model.setObjective(expr, GRB.MINIMIZE);
     } catch (GRBException e) {
       e.printStackTrace();
