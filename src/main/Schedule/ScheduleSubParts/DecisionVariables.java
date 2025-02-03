@@ -51,6 +51,10 @@ public class DecisionVariables {
                         + timeSlots[k]
                         + "_"
                         + rooms[r].name());
+
+            if (assign[i][j][k][r] == null){
+              throw new NullPointerException("Shit is mega null");
+            }
           }
         }
       }

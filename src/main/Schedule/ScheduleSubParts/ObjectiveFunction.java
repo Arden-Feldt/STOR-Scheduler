@@ -26,31 +26,43 @@ public class ObjectiveFunction {
       throws GRBException {
     try {
 
-      GRBLinExpr expr = new GRBLinExpr();
-      GRBLinExpr objective = new GRBLinExpr();
+      GRBLinExpr profPref = new GRBLinExpr();
+      GRBLinExpr gradOverlap = new GRBLinExpr();
 
       // Add terms for assigning courses to time slots and rooms
       for (int i = 0; i < courses.length; i++) {
         for (int j = 0; j < faculty.length; j++) {
           for (int k = 0; k < timeSlots.length; k++) {
             for (int r = 0; r < rooms.length; r++) {
-              expr.addTerm(faculty[j].getWillingness()[k], assign[i][j][k][r]);
+              if (assign[i][j][k][r] == null) {
+                System.out.println("assign[" + i + "][" + j + "][" + k + "][" + r + "] is null.");
+              } else {
+                profPref.addTerm(faculty[j].getWillingness()[k], assign[i][j][k][r]);
+              }
             }
           }
         }
       }
 
+
       // Add terms for grad_count (slack variables) to penalize more graduate-level courses
       for (int k = 0; k < timeSlots.length; k++) {
-        // You can apply a penalty term to the grad_count variable to penalize the number of grad courses
-        objective.addTerm(GRADOVERLAPPENALTY, gradCount[k]);
+        // Apply a penalty term to the grad_count variable to penalize the number of grad courses
+        if (gradCount[k] != null) {
+          gradOverlap.addTerm(GRADOVERLAPPENALTY, gradCount[k]);
+        } else {
+          System.out.println("gradCount[" + k + "] is null");
+        }
       }
 
       if (assign == null || gradCount == null) {
         throw new IllegalArgumentException("Assign or gradCount is null.");
       }
 
-      model.setObjective(expr, GRB.MINIMIZE);
+      profPref.add(gradOverlap);
+
+      model.setObjective(profPref, GRB.MINIMIZE);
+
     } catch (GRBException e) {
       e.printStackTrace();
     }
