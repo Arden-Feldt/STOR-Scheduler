@@ -20,10 +20,23 @@ public class ObjectiveFunction {
         this.faculty = faculty;
         this.rooms = rooms;
         this.timeSlots = timeSlots;
-      this.decisionVariables = decisionVariables;
+        this.decisionVariables = decisionVariables;
     }
 
     public void initFunction (GRBModel model, GRBVar[][][][] assign) throws GRBException {
+
+        GRBLinExpr facultyWillingness = calculateFacultyWillingness(assign);
+        GRBLinExpr timeslotPenalty = calculateTimeslotOverlapPenalty();
+
+        GRBLinExpr totalObjective = new GRBLinExpr();
+        totalObjective.add(facultyWillingness);
+        // totalObjective.add(timeslotPenalty);
+
+        model.setObjective(totalObjective, GRB.MINIMIZE);
+    }
+
+    // Calculates the faculty willingness score
+    private GRBLinExpr calculateFacultyWillingness(GRBVar[][][][] assign) throws GRBException {
         GRBLinExpr expr = new GRBLinExpr();
         for (int i = 0; i < courses.length; i++) {
             for (int j = 0; j < faculty.length; j++) {
@@ -34,23 +47,16 @@ public class ObjectiveFunction {
                 }
             }
         }
+        return expr;
+    }
 
-
+    // Calculates the penalty for overlapping timeslots
+    private GRBLinExpr calculateTimeslotOverlapPenalty() throws GRBException {
         GRBLinExpr obj = new GRBLinExpr();
-        for (int i = 0; i < timeSlots.length; i++){
+        for (int i = 0; i < timeSlots.length; i++) {
             obj.addTerm(GRADOVERLAPPENALTY, decisionVariables.gradCounterDecVar[i]);
         }
-
-        // Combine subexpressions into a single expression
-        /*
-
-        GRBLinExpr totalObjective = new GRBLinExpr();
-        totalObjective.add(expr);
-        totalObjective.add(obj);
-
-         */
-
-        // TODO: YOU SET THIS TO MIN BE CAREFUL
-        model.setObjective(expr, GRB.MINIMIZE);
+        return obj;
     }
+
 }
