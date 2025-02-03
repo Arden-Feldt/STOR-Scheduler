@@ -57,12 +57,13 @@ public class DecisionVariables {
           for (int r = 0; r < rooms.length; r++) {
 
             //TODO: add check for gradClass
-            sumExpr.addTerm(1.0, assign[i][j][t][r]);
+            //if (courses[i].isGraduateCourse()){   // Seems to break the thing (as in turn off)
+              sumExpr.addTerm(1.0, assign[i][j][t][r]);
+            //}
+
           }
         }
       }
-
-      System.out.println("Conflicts at " + timeSlots[t] + " is " + sumExpr);
 
       // TODO: Add to obj funct
       model.addConstr(gradCounterDecVar[t], GRB.EQUAL, sumExpr, "count_timeslot_" + t);

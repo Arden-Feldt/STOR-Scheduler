@@ -41,6 +41,15 @@ public class ObjectiveFunction {
             obj.addTerm(GRADOVERLAPPENALTY, decisionVariables.gradCounterDecVar[i]);
         }
 
+        // Combine subexpressions into a single expression
+        /*
+
+        GRBLinExpr totalObjective = new GRBLinExpr();
+        totalObjective.add(expr);
+        totalObjective.add(obj);
+
+         */
+
         // TODO: YOU SET THIS TO MIN BE CAREFUL
         model.setObjective(expr, GRB.MINIMIZE);
     }
