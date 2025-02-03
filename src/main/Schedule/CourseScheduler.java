@@ -50,7 +50,7 @@ public class CourseScheduler {
 
       // Objective function: maximize willingness
       ObjectiveFunction objectiveFunction =
-          new ObjectiveFunction(courses, faculty, rooms, timeSlots);
+          new ObjectiveFunction(courses, faculty, rooms, timeSlots, decisionVariables);
       objectiveFunction.initFunction(model, assign);
 
       // Constraints: course assignment, professor availability, room availability, etc.

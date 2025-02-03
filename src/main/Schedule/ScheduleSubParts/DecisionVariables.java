@@ -1,15 +1,9 @@
 package main.Schedule.ScheduleSubParts;
 
-import com.gurobi.gurobi.GRB;
-import com.gurobi.gurobi.GRBException;
-import com.gurobi.gurobi.GRBModel;
-import com.gurobi.gurobi.GRBVar;
+import com.gurobi.gurobi.*;
 import main.Course.Course;
-import main.Course.CourseManager;
 import main.Course.Room;
 import main.Faculty.Faculty;
-import main.Faculty.FacultyManager;
-import main.Schedule.CourseScheduler;
 
 public class DecisionVariables {
 
@@ -17,12 +11,14 @@ public class DecisionVariables {
   private final Faculty[] faculty;
   private final Room[] rooms;
   private final String[] timeSlots;
+  public final GRBVar[] gradCounterDecVar;
 
   public DecisionVariables(Course[] courses, Faculty[] faculty, Room[] rooms, String[] timeSlots) {
     this.courses = courses;
     this.faculty = faculty;
     this.rooms = rooms;
     this.timeSlots = timeSlots;
+    gradCounterDecVar = new GRBVar[timeSlots.length];
   }
 
   public void initiate(GRBModel model, GRBVar[][][][] assign) throws GRBException {
@@ -49,6 +45,28 @@ public class DecisionVariables {
       }
     }
 
+    // TODO: encapsulate away AUX decision vars and constraints
+    GRBVar[] gradCounterDecVar = new GRBVar[timeSlots.length];
+    for (int t = 0; t < timeSlots.length; t++) {
+      gradCounterDecVar[t] = model.addVar(0.0, courses.length, 0.0, GRB.INTEGER, "gradCounterDecVar: " + timeSlots[t]);
+
+      // Constraint: sum of grad class over timeslots
+      GRBLinExpr sumExpr = new GRBLinExpr();
+      for (int i = 0; i < courses.length; i++) {
+        for (int j = 0; j < faculty.length; j++) {
+          for (int r = 0; r < rooms.length; r++) {
+
+            //TODO: add check for gradClass
+            sumExpr.addTerm(1.0, assign[i][j][t][r]);
+          }
+        }
+      }
+
+      System.out.println("Conflicts at " + timeSlots[t] + " is " + sumExpr);
+
+      // TODO: Add to obj funct
+      model.addConstr(gradCounterDecVar[t], GRB.EQUAL, sumExpr, "count_timeslot_" + t);
+    }
 
   }
 }
