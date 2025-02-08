@@ -5,10 +5,8 @@ public class Defaults {
   // Hard coded numbers
   public static final int NUMTIMESLOTS = 18;
   public static final int DEFAULTSECTIONSIZE = 50;
-  public static final int GRADOVERLAPPENALTY = 10000;
 
   // Paths
-
   public static final String PREFRENCEPATH =
       "C:\\Users\\ethan\\IdeaProjects\\STORSchedular\\src\\main\\Faculty\\ProfessorData\\2025\\timePref25.csv";
   public static final String COURSEDATAPATH =
