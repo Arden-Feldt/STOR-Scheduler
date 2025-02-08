@@ -5,7 +5,7 @@ public class Defaults {
   // Hard coded numbers
   public static final int NUMTIMESLOTS = 18;
   public static final int DEFAULTSECTIONSIZE = 50;
-  public static final int GRADOVERLAPPENALTY = 10;
+  public static final int GRADOVERLAPPENALTY = 10000;
 
   // Paths
 

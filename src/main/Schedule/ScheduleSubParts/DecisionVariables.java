@@ -4,7 +4,6 @@ import com.gurobi.gurobi.*;
 import main.Course.Course;
 import main.Course.Room;
 import main.Faculty.Faculty;
-import org.junit.runners.model.InitializationError;
 
 public class DecisionVariables {
 
@@ -46,11 +45,14 @@ public class DecisionVariables {
       }
     }
 
-    // TODO: encapsulate away AUX decision vars and constraints
-    GRBVar[] gradCounterDecVar = new GRBVar[timeSlots.length];
+    // Init Grad Counter
+    this.gradCounterDecVar = initGradCounterDecVar(model, assign);
+  }
+
+  private GRBVar[] initGradCounterDecVar(GRBModel model, GRBVar[][][][] assign) throws GRBException {
     for (int t = 0; t < timeSlots.length; t++) {
       gradCounterDecVar[t] =
-          model.addVar(0.0, courses.length, 0.0, GRB.INTEGER, "gradCounterDecVar: " + timeSlots[t]);
+              model.addVar(0.0, courses.length, 0.0, GRB.INTEGER, "gradCounterDecVar: " + timeSlots[t]);
 
       if (gradCounterDecVar[t] == null) {
         System.out.println("Failed to initialize gradCounterDecVar[" + t + "]");
@@ -76,11 +78,11 @@ public class DecisionVariables {
           }
         }
       }
-
-      // TODO: Add to obj funct
       model.addConstr(gradCounterDecVar[t], GRB.EQUAL, sumExpr, "count_timeslot_" + t);
     }
-    // After initializing all gradCounterDecVar elements
-    this.gradCounterDecVar = gradCounterDecVar;
+    return gradCounterDecVar;
   }
+
 }
+
+
