@@ -7,7 +7,6 @@ public class Defaults {
   public static final int DEFAULTSECTIONSIZE = 50;
 
   // Paths
-
   public static final String PREFRENCEPATH =
       "C:\\Users\\ethan\\IdeaProjects\\STORSchedular\\src\\main\\Faculty\\ProfessorData\\2025\\timePref25.csv";
   public static final String COURSEDATAPATH =

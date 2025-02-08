@@ -1,0 +1,5 @@
+if (courses[i].isGraduateCourse()){
+        System.out.println(courses[i].getName() +  " is a grad class");
+      } else {
+        System.out.println(courses[i].getName() +  " is NOT a grad class");
+      }
