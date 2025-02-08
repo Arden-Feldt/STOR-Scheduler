@@ -197,8 +197,6 @@ public class Constraints {
     }
   }
 
-  // Contstraint 7: 600 level courses can't be at the same time
-  // TODO: this doesnt work
   public void sixHundredOverlap(GRBModel model, GRBVar[][][][] assign) throws GRBException {
     for (int k = 0; k < timeSlots.length; k++) { // Loop over time slots
       GRBLinExpr expr = new GRBLinExpr();
@@ -218,41 +216,45 @@ public class Constraints {
     }
   }
 
-  // Constraint 8: 600+ courses take two periods MWF
+  // 600+ courses take two periods MWF
   // TODO: this effects tuesday thursday classes
   // TODO: this is still broken
-  public void blockNextTimeSlotForGradCoursesAllDays(GRBModel model, GRBVar[][][][] assign)
-      throws GRBException {
-    for (int i = 0; i < courses.length; i++) {
-      try {
-        // Only for courses that are graduate level (600 and above)
-        if (Integer.parseInt(courses[i].getName()) >= 600) {
-          for (int k = 0; k < timeSlots.length - 1; k++) { // Leave out the last time slot
-            for (int j = 0; j < faculty.length; j++) {
-              for (int r = 0; r < rooms.length; r++) {
-                // If the course is scheduled at time slot k, the next time slot (k+1) should not be
-                // scheduled
-                model.addConstr(
-                    assign[i][j][k][r],
-                    GRB.EQUAL,
-                    1.0,
-                    "Course_Assigned_" + courses[i].getName() + "_Timeslot_" + timeSlots[k]);
-                model.addConstr(
-                    assign[i][j][k + 1][r],
-                    GRB.EQUAL,
-                    0.0,
-                    "Block_Next_Timeslot_" + courses[i].getName() + "_After_" + timeSlots[k]);
+  // TODO Remove 7 hardcode down 2 lines
+  public void gradClassAfter(GRBModel model, GRBVar[][][][] assign) throws GRBException {
+    for (int k = 0; k < 7 - 1; k++) { // Iterate over timeslots (excluding the last one)
+      for (int i = 0; i < courses.length; i++) { // Loop over courses
+        if (courses[i].isGraduateCourse()) { // Check if the course is a graduate course (600-level)
+          for (int j = 0; j < faculty.length; j++) { // Loop over faculty
+            for (int r = 0; r < rooms.length; r++) { // Loop over rooms
+              GRBLinExpr expr = new GRBLinExpr();
+
+              // Loop over all courses again to add non-graduate courses in the next timeslot
+              for (int m = 0; m < courses.length; m++) {
+                if (!courses[m].isGraduateCourse()) { // Ensure it's not a graduate course
+                  // Add non-graduate course in the same room (r) for the next timeslot (k+1)
+                  expr.addTerm(1, assign[m][j][k + 1][r]);
+                }
               }
+
+              // Constraint: If a grad class is scheduled in room r at timeslot k,
+              // no other class (non-grad) can be scheduled in the same room at timeslot k+1
+              model.addConstr(
+                      expr,
+                      GRB.LESS_EQUAL,
+                      0, // No class can be in the same room after a graduate course
+                      "grad_class_after_" + courses[i].getName() + "_room_" + r + "_timeslot_" + k
+              );
             }
           }
         }
-      } catch (NumberFormatException e) {
-        System.out.println(courses[i].getName() + " is not an int");
       }
     }
   }
 
-  // Constrain9: Back to back can't make gardner to hanes TODO: ensure it works
+
+
+  // Constrain9: Back to back can't make gardner to hanes
+  // TODO: ensure it works
   public void gardnerToHanes(GRBModel model, GRBVar[][][][] assign) throws GRBException {
     // 6. If a professor teaches a class in Gardner, any back-to-back class must also be in Gardner
     for (int j = 0; j < faculty.length; j++) { // Iterate over each professor
