@@ -1,4 +1,4 @@
-package main.Schedule.ScheduleSubParts.slackVariables;
+package main.yard.slackVariables;
 
 import com.gurobi.gurobi.*;
 import main.Course.Course;
