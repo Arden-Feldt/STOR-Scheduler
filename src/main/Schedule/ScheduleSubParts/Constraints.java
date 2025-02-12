@@ -251,6 +251,36 @@ public class Constraints {
     }
   }
 
+  public void blockRoomAfterGradCourse(GRBModel model, GRBVar[][][][] assign) throws GRBException {
+    for (int k = 0; k < timeSlots.length - 1; k++) { // Ensure k+1 is valid
+      for (int r = 0; r < rooms.length; r++) { // Loop over all rooms
+        GRBLinExpr expr = new GRBLinExpr();
+
+        // Check if a grad course is scheduled in timeslot k
+        for (int i = 0; i < courses.length; i++) {
+          if (courses[i].isGraduateCourse()) {
+            for (int j = 0; j < faculty.length; j++) {
+              expr.addTerm(1, assign[i][j][k][r]);
+            }
+          }
+        }
+
+        // If a grad course is scheduled at (k, r), block (k+1, r)
+        GRBLinExpr blockExpr = new GRBLinExpr();
+        for (int i = 0; i < courses.length; i++) {
+          for (int j = 0; j < faculty.length; j++) {
+            blockExpr.addTerm(1, assign[i][j][k + 1][r]);
+          }
+        }
+
+        // Constraint: If a grad course is in (k, r), no course can be in (k+1, r)
+        model.addConstr(blockExpr, GRB.LESS_EQUAL, expr, "block_after_grad_room_" + r + "_timeslot_" + k);
+      }
+    }
+  }
+
+
+
 
 
   // Constrain9: Back to back can't make gardner to hanes
