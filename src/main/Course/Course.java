@@ -58,4 +58,14 @@ public class Course {
       return false;
     }
   }
+
+  public boolean isGraduateCourseInclusive() {
+    try {
+      int courseNumber = Integer.parseInt(this.name);
+      return courseNumber >= 600;
+    } catch (NumberFormatException e) {
+      System.out.println(this.name + " is not a valid course number");
+      return false;
+    }
+  }
 }

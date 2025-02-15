@@ -218,41 +218,6 @@ public class Constraints {
     }
   }
 
-  // 600+ courses take two periods MWF
-  // TODO: this effects tuesday thursday classes
-  // TODO: this is still broken
-  // TODO Remove 7 hardcode down 2 lines
-  public void gradClassAfter(GRBModel model, GRBVar[][][][] assign) throws GRBException {
-    for (int k = 0; k < 7 - 1; k++) { // Iterate over timeslots (excluding the last one)
-      for (int i = 0; i < courses.length; i++) { // Loop over courses
-        if (courses[i].isGraduateCourse()) { // Check if the course is a graduate course (600-level)
-          for (int j = 0; j < faculty.length; j++) { // Loop over faculty
-            for (int r = 0; r < rooms.length; r++) { // Loop over rooms
-              GRBLinExpr expr = new GRBLinExpr();
-
-              // Loop over all courses again to add non-graduate courses in the next timeslot
-              for (int m = 0; m < courses.length; m++) {
-                if (!courses[m].isGraduateCourse()) { // Ensure it's not a graduate course
-                  // Add non-graduate course in the same room (r) for the next timeslot (k+1)
-                  expr.addTerm(1, assign[m][j][k + 1][r]);
-                }
-              }
-
-              // Constraint: If a grad class is scheduled in room r at timeslot k,
-              // no other class (non-grad) can be scheduled in the same room at timeslot k+1
-              model.addConstr(
-                      expr,
-                      GRB.LESS_EQUAL,
-                      0, // No class can be in the same room after a graduate course
-                      "grad_class_after_" + courses[i].getName() + "_room_" + r + "_timeslot_" + k
-              );
-            }
-          }
-        }
-      }
-    }
-  }
-
   public void blockRoomAfterGradCourse(GRBModel model, GRBVar[][][][] assign) throws GRBException {
     int M = faculty.length * courses.length;  // Large enough upper bound
 
@@ -265,7 +230,7 @@ public class Constraints {
         // Expression to check if a grad course is scheduled in (k, r)
         GRBLinExpr gradExpr = new GRBLinExpr();
         for (int i = 0; i < courses.length; i++) {
-          if (courses[i].isGraduateCourse()) {
+          if (courses[i].isGraduateCourseInclusive()) {
             for (int j = 0; j < faculty.length; j++) {
               gradExpr.addTerm(1, assign[i][j][k][r]);
             }

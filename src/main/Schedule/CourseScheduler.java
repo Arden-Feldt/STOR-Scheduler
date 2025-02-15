@@ -56,10 +56,9 @@ public class CourseScheduler {
       constraints.backToBackConstraint(model, assign);
       constraints.gradStudentRoomConstraint(model, assign);
       constraints.enoughSeatsConstraint(model, assign);
-      // constraints.sixHundredOverlap(model, assign);
+      constraints.sixHundredOverlap(model, assign);
       constraints.blockRoomAfterGradCourse(model, assign);
       // TODO FIX
-      // constraints.gradClassAfter(model, assign);
       // constraints.gardnerToHanes(model, assign);
 
       // Optimize the model
