@@ -6,6 +6,8 @@ import main.Course.Room;
 import main.Faculty.Faculty;
 import main.Faculty.GradStudent;
 
+import static main.Defaults.MWFNUMTIMESLOTS;
+
 public class Constraints {
 
   private final Course[] courses;
@@ -252,20 +254,31 @@ public class Constraints {
   }
 
   public void blockRoomAfterGradCourse(GRBModel model, GRBVar[][][][] assign) throws GRBException {
-    for (int k = 0; k < timeSlots.length - 1; k++) { // Ensure k+1 is valid
-      for (int r = 0; r < rooms.length; r++) { // Loop over all rooms
-        GRBLinExpr expr = new GRBLinExpr();
+    int M = faculty.length * courses.length;  // Large enough upper bound
 
-        // Check if a grad course is scheduled in timeslot k
+    for (int k = 0; k < MWFNUMTIMESLOTS - 1; k++) { // Ensure k+1 is valid
+      for (int r = 0; r < rooms.length; r++) { // Loop over all rooms
+
+        // Create a binary variable to indicate if a grad course is scheduled in (k, r)
+        GRBVar gradCourseAssigned = model.addVar(0, 1, 0, GRB.BINARY, "grad_assigned_" + k + "_" + r);
+
+        // Expression to check if a grad course is scheduled in (k, r)
+        GRBLinExpr gradExpr = new GRBLinExpr();
         for (int i = 0; i < courses.length; i++) {
           if (courses[i].isGraduateCourse()) {
             for (int j = 0; j < faculty.length; j++) {
-              expr.addTerm(1, assign[i][j][k][r]);
+              gradExpr.addTerm(1, assign[i][j][k][r]);
             }
           }
         }
 
-        // If a grad course is scheduled at (k, r), block (k+1, r)
+        // Ensure gradCourseAssigned is 1 if any grad course is assigned to (k, r)
+        model.addConstr(gradExpr, GRB.GREATER_EQUAL, gradCourseAssigned, "force_grad_var_" + k + "_" + r);
+        GRBLinExpr gradUpperBound = new GRBLinExpr();
+        gradUpperBound.addTerm(M, gradCourseAssigned);
+        model.addConstr(gradExpr, GRB.LESS_EQUAL, gradUpperBound, "limit_grad_var_" + k + "_" + r);
+
+        // Expression to check if any course is scheduled in (k+1, r)
         GRBLinExpr blockExpr = new GRBLinExpr();
         for (int i = 0; i < courses.length; i++) {
           for (int j = 0; j < faculty.length; j++) {
@@ -273,11 +286,16 @@ public class Constraints {
           }
         }
 
-        // Constraint: If a grad course is in (k, r), no course can be in (k+1, r)
-        model.addConstr(blockExpr, GRB.LESS_EQUAL, expr, "block_after_grad_room_" + r + "_timeslot_" + k);
+        // If gradCourseAssigned is 1, ensure no courses in (k+1, r)
+        GRBLinExpr blockLimit = new GRBLinExpr();
+        blockLimit.addConstant(M);
+        blockLimit.addTerm(-M, gradCourseAssigned);
+        model.addConstr(blockExpr, GRB.LESS_EQUAL, blockLimit, "block_if_grad_" + k + "_" + r);
       }
     }
   }
+
+
 
 
 

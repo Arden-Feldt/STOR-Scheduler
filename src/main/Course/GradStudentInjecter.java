@@ -22,7 +22,7 @@ public class GradStudentInjecter {
   public void inject() {
     // testing git push
     try {
-      throw new Exception("bazinga");
+      throw new Exception("GradStud Injecter: How did we get here?");
     } catch (IOException e) {
       e.printStackTrace();
     } catch (Exception e) {
