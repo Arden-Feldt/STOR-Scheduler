@@ -58,6 +58,7 @@ public class CourseScheduler {
       constraints.enoughSeatsConstraint(model, assign);
       constraints.sixHundredOverlap(model, assign);
       constraints.blockRoomAfterGradCourse(model, assign);
+      constraints.profsTeachOneDay(model, assign);
       // TODO FIX
       // constraints.gardnerToHanes(model, assign);
 

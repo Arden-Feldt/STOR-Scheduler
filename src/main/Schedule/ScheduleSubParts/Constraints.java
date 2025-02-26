@@ -202,7 +202,6 @@ public class Constraints {
   public void sixHundredOverlap(GRBModel model, GRBVar[][][][] assign) throws GRBException {
     for (int k = 0; k < timeSlots.length; k++) { // Loop over time slots
       GRBLinExpr expr = new GRBLinExpr();
-
       for (int i = 0; i < courses.length; i++) { // Loop over courses
         if (courses[i].isGraduateCourse()) { // Check if 600-level course
           for (int j = 0; j < faculty.length; j++) { // Loop over faculty
@@ -260,10 +259,40 @@ public class Constraints {
     }
   }
 
+  public void profsTeachOneDay(GRBModel model, GRBVar[][][][] assign) throws GRBException {
+    for (int j = 0; j < faculty.length; j++) {
+      GRBLinExpr exprMWF = new GRBLinExpr();
+      GRBLinExpr exprTTh = new GRBLinExpr();
+
+      for (int k = 0; k < MWFNUMTIMESLOTS; k++) {
+        for (int i = 0; i < courses.length; i++) {
+          for (int r = 0; r < rooms.length; r++) {
+            exprMWF.addTerm(1.0, assign[i][j][k][r]);
+          }
+        }
+      }
+
+      for (int k = MWFNUMTIMESLOTS; k < timeSlots.length; k++) {
+        for (int i = 0; i < courses.length; i++) {
+          for (int r = 0; r < rooms.length; r++) {
+            exprTTh.addTerm(1.0, assign[i][j][k][r]);
+          }
+        }
+      }
+
+      // If a professor is teaching MWF, they cannot teach TTh
+      model.addConstr(exprMWF, GRB.GREATER_EQUAL, 1, "Prof_" + faculty[j].getName() + "_MWF_Exists");
+      model.addConstr(exprTTh, GRB.LESS_EQUAL, 0, "Prof_" + faculty[j].getName() + "_No_TTh_If_MWF");
+
+      // If a professor is teaching TTh, they cannot teach MWF
+      model.addConstr(exprTTh, GRB.GREATER_EQUAL, 1, "Prof_" + faculty[j].getName() + "_TTh_Exists");
+      model.addConstr(exprMWF, GRB.LESS_EQUAL, 0, "Prof_" + faculty[j].getName() + "_No_MWF_If_TTh");
+    }
+  }
 
 
 
-
+  public void classDuplicateTime(GRBModel model, GRBVar[][][][] assign) throws GRBException {}
 
 
   // Constrain9: Back to back can't make gardner to hanes
