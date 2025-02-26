@@ -22,6 +22,7 @@ public class Constraints {
     this.timeSlots = timeSlots;
   }
 
+  // Meat and potatoes of making every-fucking-thing work
   public void singletonConstraint(GRBModel model, GRBVar[][][][] assign) throws GRBException {
     // 1. Each course must be assigned to exactly one time slot by the assigned professor in one
     // room
@@ -118,6 +119,7 @@ public class Constraints {
     }
   }
 
+  // Profs can only teach backTobacks if they consent to it
   public void backToBackConstraint(GRBModel model, GRBVar[][][][] assign) throws GRBException {
     // 4. Each professor cannot teach three (or two) classes in a row
     for (int j = 0; j < faculty.length; j++) {
@@ -160,6 +162,7 @@ public class Constraints {
     }
   }
 
+  // Grad student rooms can only be used by classes taught by grad students
   public void gradStudentRoomConstraint(GRBModel model, GRBVar[][][][] assign) throws GRBException {
     // 5. Only GradStudents can be assigned to GradStudentRoom
     for (int i = 0; i < courses.length; i++) {
@@ -180,6 +183,7 @@ public class Constraints {
     }
   }
 
+  // You can only teach big classes in big rooms
   public void enoughSeatsConstraint(GRBModel model, GRBVar[][][][] assign) throws GRBException {
     // 6. Courses must be assigned to rooms with enough seats
     for (int i = 0; i < courses.length; i++) {
@@ -199,6 +203,7 @@ public class Constraints {
     }
   }
 
+  // Prevent 600 lvl classes from directly overlapping
   public void sixHundredOverlap(GRBModel model, GRBVar[][][][] assign) throws GRBException {
     for (int k = 0; k < timeSlots.length; k++) { // Loop over time slots
       GRBLinExpr expr = new GRBLinExpr();
@@ -217,6 +222,7 @@ public class Constraints {
     }
   }
 
+  // Classes can't be taught immediately after grad classes in same room
   public void blockRoomAfterGradCourse(GRBModel model, GRBVar[][][][] assign) throws GRBException {
     int M = faculty.length * courses.length;  // Large enough upper bound
 
@@ -258,6 +264,8 @@ public class Constraints {
       }
     }
   }
+
+  // Profs can either teach MWF or TTh
   public void profsTeachOneDay(GRBModel model, GRBVar[][][][] assign) throws GRBException {
     int numFaculty = faculty.length;
     int numTimeSlots = timeSlots.length;
@@ -308,12 +316,8 @@ public class Constraints {
     }
   }
 
-
-
-
-
+  // Can't have different sections of the same class in the same time slot
   public void classDuplicateTime(GRBModel model, GRBVar[][][][] assign) throws GRBException {}
-
 
   // Constrain9: Back to back can't make gardner to hanes
   // TODO: ensure it works
