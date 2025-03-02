@@ -60,12 +60,11 @@ public class Course {
   }
 
   public boolean isGraduateCourseInclusive() {
-    try {
       int courseNumber = Integer.parseInt(this.name);
       return courseNumber >= 600;
-    } catch (NumberFormatException e) {
-      System.out.println(this.name + " is not a valid course number");
-      return false;
-    }
+  }
+
+  public int parseNumber() {
+    return Integer.parseInt(this.name);
   }
 }
