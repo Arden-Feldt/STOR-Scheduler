@@ -333,7 +333,31 @@ public class Constraints {
 
 
   // Can't have different sections of the same class in the same time slot
-  public void classDuplicateTime(GRBModel model, GRBVar[][][][] assign) throws GRBException {}
+  public void classDuplicateTime(GRBModel model, GRBVar[][][][] assign) throws GRBException {
+    for (int i = 0; i < courses.length; i++) {
+      for (int j = i + 1; j < courses.length; j++) {
+        // Check if both courses have the same name (same class)
+        if (courses[i].getName().equals(courses[j].getName())) {
+          // Now create a constraint to ensure that they are not assigned to the same time slot and
+          // room
+          for (int k = 0; k < timeSlots.length; k++) { // Loop over all time slots
+            for (int r = 0; r < rooms.length; r++) { // Loop over all rooms
+              GRBLinExpr expr = new GRBLinExpr();
+              expr.addTerm(1.0, assign[i][0][k][r]); // Course i
+              expr.addTerm(1.0, assign[j][0][k][r]); // Course j
+              // The sum should be less than or equal to 1 (not both can be scheduled at the same
+              // time)
+              model.addConstr(
+                  expr,
+                  GRB.LESS_EQUAL,
+                  1,
+                  "SameTimeConstraint_" + courses[i].getName() + "_" + k + "_" + r);
+            }
+          }
+        }
+      }
+    }
+  }
 
   // Constrain9: Back to back can't make gardner to hanes
   // TODO: ensure it works
