@@ -14,4 +14,5 @@ public class Defaults {
       "C:\\Users\\ethan\\IdeaProjects\\STORSchedular\\src\\main\\Faculty\\ProfessorData\\2025\\classAssignments25.csv";
   public static final String RAWSCHEDULEPATH = "src/main/Schedule/course_schedule.csv";
   public static final String DISPLAYSCHEDULECSVPATH = "src/main/Schedule/legible_schedule.csv";
+  public static final String HARDSETPATH = "C:\\Users\\ethan\\IdeaProjects\\STORSchedular\\src\\main\\givenData\\hardsets.csv";
 }

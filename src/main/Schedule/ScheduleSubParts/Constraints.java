@@ -5,7 +5,12 @@ import main.Course.Course;
 import main.Course.Room;
 import main.Faculty.Faculty;
 import main.Faculty.GradStudent;
+import main.Schedule.ScheduleSubParts.ConstraintHelperFunctions.HardsetReader;
 
+import java.io.IOException;
+import java.util.Map;
+
+import static main.Defaults.HARDSETPATH;
 import static main.Defaults.MWFNUMTIMESLOTS;
 
 public class Constraints {
@@ -361,6 +366,32 @@ public class Constraints {
     }
   }
 
+  public void hardsets(GRBModel model, GRBVar[][][][] assign) throws GRBException, IOException {
+    HardsetReader hardsetReader = new HardsetReader(HARDSETPATH);
+
+    Map<String, Map<String, String>> hardsetMap = hardsetReader.readCSV();
+
+    for (Map.Entry<String, Map<String, String>> courseEntry : hardsetMap.entrySet()) {
+      String courseName = courseEntry.getKey();
+      Map<String, String> facultyTimeMap = courseEntry.getValue();
+
+      // Loop over the faculties and their time slots for this course
+      for (Map.Entry<String, String> facultyTimeEntry : facultyTimeMap.entrySet()) {
+        String facultyName = facultyTimeEntry.getKey();
+        String timeSlot = facultyTimeEntry.getValue();
+
+        // Find the faculty index, course index, and timeSlot index
+        int facultyIndex = facultyList.indexOf(facultyName); // Implement this function
+        int courseIndex = courseList.indexOf(courseName);   // Implement this function
+        int timeSlotIndex = timeSlotList.indexOf(timeSlot); // Implement this function
+
+        // Add the constraint: course[i] assigned to faculty[j] at time slot[k]
+        GRBLinExpr expr = new GRBLinExpr();
+        expr.addTerm(1.0, assign[courseIndex][facultyIndex][timeSlotIndex][0]); // Assuming room 0
+        model.addConstr(expr, GRB.EQUAL, 1.0, "HardsetConstraint_" + courseName + "_" + facultyName + "_" + timeSlot);
+      }
+    }
+  }
 
   // Constrain9: Back to back can't make gardner to hanes
   // TODO: ensure it works
