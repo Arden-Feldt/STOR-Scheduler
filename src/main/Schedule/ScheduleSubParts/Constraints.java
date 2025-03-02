@@ -272,38 +272,36 @@ public class Constraints {
     int numCourses = courses.length;
     int numRooms = rooms.length;
 
-    int BIG_M = numCourses; // Large constant to enforce logic
-
-    // Binary variables indicating if faculty teaches in early/late slots
-    GRBVar[] isEarly = new GRBVar[numFaculty];
-    GRBVar[] isLate = new GRBVar[numFaculty];
+    // Binary variables indicating if faculty teaches in MWF/TTh slots
+    GRBVar[] scheduledMWF = new GRBVar[numFaculty];
+    GRBVar[] scheduledTTh = new GRBVar[numFaculty];
 
     for (int j = 0; j < numFaculty; j++) {
-      isEarly[j] = model.addVar(0.0, 1.0, 0.0, GRB.BINARY, "isEarly_" + faculty[j].getName());
-      isLate[j] = model.addVar(0.0, 1.0, 0.0, GRB.BINARY, "isLate_" + faculty[j].getName());
+      scheduledMWF[j] = model.addVar(0.0, 1.0, 0.0, GRB.BINARY, "scheduledMWF_" + faculty[j].getName());
+      scheduledTTh[j] = model.addVar(0.0, 1.0, 0.0, GRB.BINARY, "scheduledTTh_" + faculty[j].getName());
     }
 
-    // Constraint 1: If a faculty teaches in an early slot, set isEarly[j] = 1
+    // Constraint 1: If a faculty teaches in an MWF slot, set scheduledMWF[j] = 1
     for (int j = 0; j < numFaculty; j++) {
       GRBLinExpr earlySum = new GRBLinExpr();
       for (int i = 0; i < numCourses; i++) {
-        for (int k = 0; k < MWFNUMTIMESLOTS; k++) { // Early slots
+        for (int k = 0; k < MWFNUMTIMESLOTS; k++) { // MWF slots
           for (int r = 0; r < numRooms; r++) {
             earlySum.addTerm(1.0, assign[i][j][k][r]);
           }
         }
       }
 
-      // Ensure isEarly[j] is 1 if faculty teaches in an early slot
+      // Ensure scheduledMWF[j] is 1 if faculty teaches in an MWF slot
       GRBLinExpr rhsEarly = new GRBLinExpr();
-      rhsEarly.addTerm(BIG_M, isEarly[j]);
+      rhsEarly.addTerm(courses.length, scheduledMWF[j]);
       model.addConstr(earlySum, GRB.LESS_EQUAL, rhsEarly, "Faculty_Early_" + faculty[j].getName());
 
-      // Ensure isEarly[j] is 0 if no early slots are assigned
-      model.addConstr(earlySum, GRB.GREATER_EQUAL, isEarly[j], "Faculty_MinEarly_" + faculty[j].getName());
+      // Ensure scheduledMWF[j] is 0 if no MWF slots are assigned
+      model.addConstr(earlySum, GRB.GREATER_EQUAL, scheduledMWF[j], "Faculty_MinEarly_" + faculty[j].getName());
     }
 
-    // Constraint 2: If a faculty teaches in a late slot, set isLate[j] = 1
+    // Constraint 2: If a faculty teaches in a late slot, set scheduledTTh[j] = 1
     for (int j = 0; j < numFaculty; j++) {
       GRBLinExpr lateSum = new GRBLinExpr();
       for (int i = 0; i < numCourses; i++) {
@@ -314,21 +312,21 @@ public class Constraints {
         }
       }
 
-      // Ensure isLate[j] is 1 if faculty teaches in a late slot
+      // Ensure scheduledTTh[j] is 1 if faculty teaches in a TTh slot
       GRBLinExpr rhsLate = new GRBLinExpr();
-      rhsLate.addTerm(BIG_M, isLate[j]);
+      rhsLate.addTerm(courses.length, scheduledTTh[j]);
       model.addConstr(lateSum, GRB.LESS_EQUAL, rhsLate, "Faculty_Late_" + faculty[j].getName());
 
-      // Ensure isLate[j] is 0 if no late slots are assigned
-      model.addConstr(lateSum, GRB.GREATER_EQUAL, isLate[j], "Faculty_MinLate_" + faculty[j].getName());
+      // Ensure scheduledTTh[j] is 0 if no TTh slots are assigned
+      model.addConstr(lateSum, GRB.GREATER_EQUAL, scheduledTTh[j], "Faculty_MinLate_" + faculty[j].getName());
     }
 
-    // Constraint 3: A faculty cannot teach both early and late slots
+    // Constraint 3: A faculty cannot teach both MWF and TTh slots
     for (int j = 0; j < numFaculty; j++) {
       GRBLinExpr sumExpr = new GRBLinExpr();
-      sumExpr.addTerm(1.0, isEarly[j]);
-      sumExpr.addTerm(1.0, isLate[j]);
-      model.addConstr(sumExpr, GRB.LESS_EQUAL, 1, "Faculty_EitherEarlyOrLate_" + faculty[j].getName());
+      sumExpr.addTerm(1.0, scheduledMWF[j]);
+      sumExpr.addTerm(1.0, scheduledTTh[j]);
+      model.addConstr(sumExpr, GRB.LESS_EQUAL, 1, "Faculty_EitherMWFOrTTh_" + faculty[j].getName());
     }
   }
 
