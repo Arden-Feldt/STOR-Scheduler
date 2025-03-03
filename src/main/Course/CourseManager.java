@@ -29,4 +29,14 @@ public class CourseManager {
         }
         return i;
     }
+
+    public Course getCourse(String name){
+        for(Course course : courses){
+            if (name.equals(course.getName())){
+                return course;
+            }
+        }
+        return null;
+    }
+
 }

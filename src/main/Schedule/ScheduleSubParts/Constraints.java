@@ -335,8 +335,6 @@ public class Constraints {
     }
   }
 
-
-
   // Can't have different sections of the same class in the same time slot
   public void classDuplicateTime(GRBModel model, GRBVar[][][][] assign) throws GRBException {
     for (int i = 0; i < courses.length; i++) {
@@ -367,7 +365,7 @@ public class Constraints {
   }
 
   public void hardsets(GRBModel model, GRBVar[][][][] assign) throws GRBException, IOException {
-    HardsetReader hardsetReader = new HardsetReader(HARDSETPATH);
+    HardsetReader hardsetReader = new HardsetReader(HARDSETPATH, courses,  faculty, rooms, timeSlots);
 
     Map<String, Map<String, String>> hardsetMap = hardsetReader.readCSV();
 
