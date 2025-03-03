@@ -7,10 +7,10 @@ import main.Faculty.Faculty;
 public class FacultyTimeslotRoom {
     private Faculty faculty;
     private Room room;
-    private TimeSlot timeSlot;
+    private String timeSlot;
 
     // Constructor
-    public FacultyTimeslotRoom(Faculty faculty, Room room, TimeSlot timeSlot) {
+    public FacultyTimeslotRoom(Faculty faculty, Room room, String timeSlot) {
         this.faculty = faculty;
         this.room = room;
         this.timeSlot = timeSlot;
@@ -25,7 +25,7 @@ public class FacultyTimeslotRoom {
         return room;
     }
 
-    public TimeSlot getTimeSlot() {
+    public String getTimeSlot() {
         return timeSlot;
     }
 }

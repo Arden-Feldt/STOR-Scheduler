@@ -5,10 +5,13 @@ import main.Course.Course;
 import main.Course.Room;
 import main.Faculty.Faculty;
 import main.Faculty.GradStudent;
+import main.Schedule.ScheduleSubParts.ConstraintHelperFunctions.FacultyTimeslotRoom;
 import main.Schedule.ScheduleSubParts.ConstraintHelperFunctions.HardsetReader;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import static main.Defaults.HARDSETPATH;
 import static main.Defaults.MWFNUMTIMESLOTS;
@@ -367,25 +370,52 @@ public class Constraints {
   public void hardsets(GRBModel model, GRBVar[][][][] assign) throws GRBException, IOException {
     HardsetReader hardsetReader = new HardsetReader(HARDSETPATH, courses,  faculty, rooms, timeSlots);
 
-    Map<String, Map<String, String>> hardsetMap = hardsetReader.readCSV();
+    Map<Course, List<FacultyTimeslotRoom>> hardsetMap = hardsetReader.readCSV();
 
-    for (Map.Entry<String, Map<String, String>> courseEntry : hardsetMap.entrySet()) {
-      String courseName = courseEntry.getKey();
-      Map<String, String> facultyTimeMap = courseEntry.getValue();
+    for (Map.Entry<Course, List<FacultyTimeslotRoom>> courseEntry : hardsetMap.entrySet()) {
+      Course courseName = courseEntry.getKey();
+      List<FacultyTimeslotRoom> facultyRoomTimeList = courseEntry.getValue();
 
       // Loop over the faculties and their time slots for this course
-      for (Map.Entry<String, String> facultyTimeEntry : facultyTimeMap.entrySet()) {
-        String facultyName = facultyTimeEntry.getKey();
-        String timeSlot = facultyTimeEntry.getValue();
+      for (FacultyTimeslotRoom facultyRoomTimeEntry : facultyRoomTimeList) {
+        Faculty facultyName = facultyRoomTimeEntry.getFaculty();
+        Room roomName = facultyRoomTimeEntry.getRoom();
+        String timeSlot = facultyRoomTimeEntry.getTimeSlot();
 
-        // Find the faculty index, course index, and timeSlot index
-        int facultyIndex = facultyList.indexOf(facultyName); // Implement this function
-        int courseIndex = courseList.indexOf(courseName);   // Implement this function
-        int timeSlotIndex = timeSlotList.indexOf(timeSlot); // Implement this function
+        int courseIndex = -1;
+        int facultyIndex = -1;
+        int roomIndex = -1;
+        int timeSlotIndex = -1;
+
+
+        for (int k = 0; k < timeSlots.length; k++) {
+          if (timeSlot.equals(timeSlots[k])){
+            timeSlotIndex = k;
+          }
+          for (int r = 0; r < rooms.length; r++) {
+            if (roomName.equals(rooms[r])){
+              roomIndex = r;
+            }
+            for (int i = 0; i < courses.length; i++) {
+              if (courseName.equals(courses[i].getName())){
+                courseIndex = i;
+              }
+              for (int j = 0; j < faculty.length; j++) {
+                if (facultyName.equals(faculty[j].getName())){
+                  facultyIndex = j;
+                }
+              }
+            }
+          }
+        }
+
+        if (courseIndex == -1 || facultyIndex == -1 || timeSlotIndex == -1 || roomIndex == -1){
+          throw new NoSuchElementException("One of the Hardset Values was not mapped to a course, faculty, timeslot, or room.");
+        }
 
         // Add the constraint: course[i] assigned to faculty[j] at time slot[k]
         GRBLinExpr expr = new GRBLinExpr();
-        expr.addTerm(1.0, assign[courseIndex][facultyIndex][timeSlotIndex][0]); // Assuming room 0
+        expr.addTerm(1.0, assign[courseIndex][facultyIndex][timeSlotIndex][roomIndex]); // Assuming room 0
         model.addConstr(expr, GRB.EQUAL, 1.0, "HardsetConstraint_" + courseName + "_" + facultyName + "_" + timeSlot);
       }
     }
