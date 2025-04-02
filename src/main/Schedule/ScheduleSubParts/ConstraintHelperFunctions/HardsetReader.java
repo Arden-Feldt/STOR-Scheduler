@@ -47,14 +47,16 @@ public class HardsetReader {
                 if (columns.length == 4) {
                     String courseName = columns[0].trim();
                     String facultyName = columns[1].trim();
-                    String timeSlotName = columns[2].trim();
-                    String roomName = columns[3].trim();
+                    String roomName = columns[2].trim();
+                    String timeSlotName = columns[3].trim();
 
                     // Find existing course, faculty, room, and timeSlot
                     Course course = findCourse(courseName);
                     Faculty faculty = findFaculty(facultyName);
                     Room room = findRoom(roomName);
                     String timeSlot = findTimeSlot(timeSlotName);
+
+                    System.out.println(course + " by " + faculty + " at " + timeSlot + " in " + room);
 
                     // If course is not found, skip this row (to avoid null keys in the map)
                     if (course == null || faculty == null || room == null || timeSlot == null) {
@@ -88,6 +90,7 @@ public class HardsetReader {
                     // Create and add FacultyTimeslotRoom object
                     FacultyTimeslotRoom ftsr = new FacultyTimeslotRoom(faculty, room, timeSlot);
                     hardsetMap.get(course).add(ftsr);
+                    System.out.println(ftsr);
                 }
             }
 
@@ -119,7 +122,9 @@ public class HardsetReader {
 
     private Room findRoom(String name) {
         for (Room room : rooms) {
-            if (name.equals(room.name())) {
+            System.out.println(room + ", named: " + room.name());
+            System.out.println("Comparing: ->" + name + "<- with ->" + room.name() + "<-");
+            if (name.trim().equalsIgnoreCase(room.name().trim())) {
                 return room;
             }
         }

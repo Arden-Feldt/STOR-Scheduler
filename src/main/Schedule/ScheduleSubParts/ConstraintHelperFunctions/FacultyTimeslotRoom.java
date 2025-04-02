@@ -28,5 +28,9 @@ public class FacultyTimeslotRoom {
     public String getTimeSlot() {
         return timeSlot;
     }
+
+    public String toString(){
+        return faculty + " at " + timeSlot + " in " + room;
+    }
 }
 

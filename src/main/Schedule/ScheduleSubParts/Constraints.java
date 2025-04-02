@@ -232,13 +232,14 @@ public class Constraints {
 
   // Classes can't be taught immediately after grad classes in same room
   public void blockRoomAfterGradCourse(GRBModel model, GRBVar[][][][] assign) throws GRBException {
-    int M = faculty.length * courses.length;  // Large enough upper bound
+    int M = faculty.length * courses.length; // Large enough upper bound
 
     for (int k = 0; k < MWFNUMTIMESLOTS - 1; k++) { // Ensure k+1 is valid
       for (int r = 0; r < rooms.length; r++) { // Loop over all rooms
 
         // Create a binary variable to indicate if a grad course is scheduled in (k, r)
-        GRBVar gradCourseAssigned = model.addVar(0, 1, 0, GRB.BINARY, "grad_assigned_" + k + "_" + r);
+        GRBVar gradCourseAssigned =
+            model.addVar(0, 1, 0, GRB.BINARY, "grad_assigned_" + k + "_" + r);
 
         // Expression to check if a grad course is scheduled in (k, r)
         GRBLinExpr gradExpr = new GRBLinExpr();
@@ -251,7 +252,8 @@ public class Constraints {
         }
 
         // Ensure gradCourseAssigned is 1 if any grad course is assigned to (k, r)
-        model.addConstr(gradExpr, GRB.GREATER_EQUAL, gradCourseAssigned, "force_grad_var_" + k + "_" + r);
+        model.addConstr(
+            gradExpr, GRB.GREATER_EQUAL, gradCourseAssigned, "force_grad_var_" + k + "_" + r);
         GRBLinExpr gradUpperBound = new GRBLinExpr();
         gradUpperBound.addTerm(M, gradCourseAssigned);
         model.addConstr(gradExpr, GRB.LESS_EQUAL, gradUpperBound, "limit_grad_var_" + k + "_" + r);
@@ -285,8 +287,10 @@ public class Constraints {
     GRBVar[] scheduledTTh = new GRBVar[numFaculty];
 
     for (int j = 0; j < numFaculty; j++) {
-      scheduledMWF[j] = model.addVar(0.0, 1.0, 0.0, GRB.BINARY, "scheduledMWF_" + faculty[j].getName());
-      scheduledTTh[j] = model.addVar(0.0, 1.0, 0.0, GRB.BINARY, "scheduledTTh_" + faculty[j].getName());
+      scheduledMWF[j] =
+          model.addVar(0.0, 1.0, 0.0, GRB.BINARY, "scheduledMWF_" + faculty[j].getName());
+      scheduledTTh[j] =
+          model.addVar(0.0, 1.0, 0.0, GRB.BINARY, "scheduledTTh_" + faculty[j].getName());
     }
 
     // Constraint 1: If a faculty teaches in an MWF slot, set scheduledMWF[j] = 1
@@ -306,7 +310,8 @@ public class Constraints {
       model.addConstr(earlySum, GRB.LESS_EQUAL, rhsEarly, "Faculty_Early_" + faculty[j].getName());
 
       // Ensure scheduledMWF[j] is 0 if no MWF slots are assigned
-      model.addConstr(earlySum, GRB.GREATER_EQUAL, scheduledMWF[j], "Faculty_MinEarly_" + faculty[j].getName());
+      model.addConstr(
+          earlySum, GRB.GREATER_EQUAL, scheduledMWF[j], "Faculty_MinEarly_" + faculty[j].getName());
     }
 
     // Constraint 2: If a faculty teaches in a late slot, set scheduledTTh[j] = 1
@@ -326,7 +331,8 @@ public class Constraints {
       model.addConstr(lateSum, GRB.LESS_EQUAL, rhsLate, "Faculty_Late_" + faculty[j].getName());
 
       // Ensure scheduledTTh[j] is 0 if no TTh slots are assigned
-      model.addConstr(lateSum, GRB.GREATER_EQUAL, scheduledTTh[j], "Faculty_MinLate_" + faculty[j].getName());
+      model.addConstr(
+          lateSum, GRB.GREATER_EQUAL, scheduledTTh[j], "Faculty_MinLate_" + faculty[j].getName());
     }
 
     // Constraint 3: A faculty cannot teach both MWF and TTh slots
@@ -352,12 +358,22 @@ public class Constraints {
                   GRBLinExpr expr = new GRBLinExpr();
                   expr.addTerm(1.0, assign[i][f1][k][r]); // Course i with faculty f1
                   expr.addTerm(1.0, assign[j][f2][k][r]); // Course j with faculty f2
-                  // The sum should be less than or equal to 1 (not both can be scheduled at the same time)
+                  // The sum should be less than or equal to 1 (not both can be scheduled at the
+                  // same time)
                   model.addConstr(
-                          expr,
-                          GRB.LESS_EQUAL,
-                          1,
-                          "SameTimeConstraint_" + courses[i].getName() + "_" + k + "_" + r + "_" + f1 + "_" + f2);
+                      expr,
+                      GRB.LESS_EQUAL,
+                      1,
+                      "SameTimeConstraint_"
+                          + courses[i].getName()
+                          + "_"
+                          + k
+                          + "_"
+                          + r
+                          + "_"
+                          + f1
+                          + "_"
+                          + f2);
                 }
               }
             }
@@ -368,17 +384,18 @@ public class Constraints {
   }
 
   public void hardsets(GRBModel model, GRBVar[][][][] assign) throws GRBException, IOException {
-    HardsetReader hardsetReader = new HardsetReader(HARDSETPATH, courses,  faculty, rooms, timeSlots);
+    HardsetReader hardsetReader =
+        new HardsetReader(HARDSETPATH, courses, faculty, rooms, timeSlots);
 
     Map<Course, List<FacultyTimeslotRoom>> hardsetMap = hardsetReader.readCSV();
 
     for (Map.Entry<Course, List<FacultyTimeslotRoom>> courseEntry : hardsetMap.entrySet()) {
-      Course courseName = courseEntry.getKey();
+      Course courseKey = courseEntry.getKey();
       List<FacultyTimeslotRoom> facultyRoomTimeList = courseEntry.getValue();
 
       // Loop over the faculties and their time slots for this course
       for (FacultyTimeslotRoom facultyRoomTimeEntry : facultyRoomTimeList) {
-        Faculty facultyName = facultyRoomTimeEntry.getFaculty();
+        Faculty facultyKey = facultyRoomTimeEntry.getFaculty();
         Room roomName = facultyRoomTimeEntry.getRoom();
         String timeSlot = facultyRoomTimeEntry.getTimeSlot();
 
@@ -387,36 +404,51 @@ public class Constraints {
         int roomIndex = -1;
         int timeSlotIndex = -1;
 
-
         for (int k = 0; k < timeSlots.length; k++) {
-          if (timeSlot.equals(timeSlots[k])){
+          if (timeSlot.equals(timeSlots[k])) {
             timeSlotIndex = k;
           }
-          for (int r = 0; r < rooms.length; r++) {
-            if (roomName.equals(rooms[r])){
-              roomIndex = r;
-            }
-            for (int i = 0; i < courses.length; i++) {
-              if (courseName.equals(courses[i].getName())){
-                courseIndex = i;
-              }
-              for (int j = 0; j < faculty.length; j++) {
-                if (facultyName.equals(faculty[j].getName())){
-                  facultyIndex = j;
-                }
-              }
-            }
+        }
+        for (int r = 0; r < rooms.length; r++) {
+          if (roomName.equals(rooms[r])) {
+            roomIndex = r;
+          }
+        }
+        for (int i = 0; i < courses.length; i++) {
+          if (courseKey.getName().equalsIgnoreCase(courses[i].getName())) {
+            courseIndex = i;
+          }
+        }
+        for (int j = 0; j < faculty.length; j++) {
+          if (facultyKey.getName().equals(faculty[j].getName())) {
+            facultyIndex = j;
           }
         }
 
-        if (courseIndex == -1 || facultyIndex == -1 || timeSlotIndex == -1 || roomIndex == -1){
-          throw new NoSuchElementException("One of the Hardset Values was not mapped to a course, faculty, timeslot, or room.");
+        System.out.println(
+            "course: "
+                + courseIndex
+                + ", faculty: "
+                + facultyIndex
+                + ", timeslot: "
+                + timeSlotIndex
+                + ", room: "
+                + roomIndex);
+
+        if (courseIndex == -1 || facultyIndex == -1 || timeSlotIndex == -1 || roomIndex == -1) {
+          throw new NoSuchElementException(
+              "One of the Hardset Values was not mapped to a course, faculty, timeslot, or room.");
         }
 
         // Add the constraint: course[i] assigned to faculty[j] at time slot[k]
         GRBLinExpr expr = new GRBLinExpr();
-        expr.addTerm(1.0, assign[courseIndex][facultyIndex][timeSlotIndex][roomIndex]); // Assuming room 0
-        model.addConstr(expr, GRB.EQUAL, 1.0, "HardsetConstraint_" + courseName + "_" + facultyName + "_" + timeSlot);
+        expr.addTerm(
+            1.0, assign[courseIndex][facultyIndex][timeSlotIndex][roomIndex]); // Assuming room 0
+        model.addConstr(
+            expr,
+            GRB.EQUAL,
+            1.0,
+            "HardsetConstraint_" + courseKey.getName() + "_" + facultyKey.getName() + "_" + timeSlot);
       }
     }
   }
