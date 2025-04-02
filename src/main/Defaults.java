@@ -9,9 +9,10 @@ public class Defaults {
 
   // Paths
   public static final String PREFRENCEPATH =
-      "C:\\Users\\ethan\\IdeaProjects\\STORSchedular\\src\\main\\Faculty\\ProfessorData\\2025\\timePref25.csv";
+      "src\\main\\Faculty\\ProfessorData\\2025\\timePref25.csv";
   public static final String COURSEDATAPATH =
-      "C:\\Users\\ethan\\IdeaProjects\\STORSchedular\\src\\main\\Faculty\\ProfessorData\\2025\\classAssignments25.csv";
+      "src\\main\\Faculty\\ProfessorData\\2025\\classAssignments25.csv";
   public static final String RAWSCHEDULEPATH = "src/main/Schedule/course_schedule.csv";
   public static final String DISPLAYSCHEDULECSVPATH = "src/main/Schedule/legible_schedule.csv";
+  public static final String HARDSETPATH = "src\\main\\givenData\\hardsets.csv";
 }
