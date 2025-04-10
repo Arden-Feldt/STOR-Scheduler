@@ -5,16 +5,17 @@ import main.Course.Course;
 import main.Course.Room;
 import main.Faculty.Faculty;
 import main.Faculty.GradStudent;
+import main.Schedule.ScheduleSubParts.ConstraintHelperFunctions.ConflictReader;
 import main.Schedule.ScheduleSubParts.ConstraintHelperFunctions.FacultyTimeslotRoom;
 import main.Schedule.ScheduleSubParts.ConstraintHelperFunctions.HardsetReader;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import static main.Defaults.HARDSETPATH;
-import static main.Defaults.MWFNUMTIMESLOTS;
+import static main.Defaults.*;
 
 public class Constraints {
 
@@ -452,6 +453,55 @@ public class Constraints {
       }
     }
   }
+
+  public void courseConflicts(GRBModel model, GRBVar[][][][] x)
+          throws GRBException, IOException {
+    ConflictReader conflictReader = new ConflictReader(CONFLICTSPATH);
+    HashMap<String, String> conflictCourses = conflictReader.readCSV();
+    System.out.println(conflictCourses.isEmpty());
+
+    for (int i = 0; i < courses.length; i++) {
+      String courseA = courses[i].getName();
+
+      if (conflictCourses.containsKey(courseA)) {
+        String conflictingCourseName = conflictCourses.get(courseA);
+        System.out.println(courseA + "is course A");
+
+        for (int ii = 0; ii < courses.length; ii++) {
+          String courseB = courses[ii].getName();
+
+          if (courseB.equalsIgnoreCase(conflictingCourseName)) {
+            for (int k = 0; k < timeSlots.length; k++) {
+              System.out.println(courseB + "is course B");
+
+              GRBLinExpr expr = new GRBLinExpr();
+
+              // Sum over all room/faculty combinations for course A
+              for (int r = 0; r < rooms.length; r++) {
+                for (int j = 0; j < faculty.length; j++) {
+                  expr.addTerm(1.0, x[i][j][k][r]);
+                }
+              }
+
+              // Sum over all room/faculty combinations for course B
+              for (int r = 0; r < rooms.length; r++) {
+                for (int j = 0; j < faculty.length; j++) {
+                  expr.addTerm(1.0, x[ii][j][k][r]);
+                }
+              }
+
+              model.addConstr(
+                      expr,
+                      GRB.LESS_EQUAL,
+                      1,
+                      "conflict_" + courseA + "_" + courseB + "_t" + k);
+            }
+          }
+        }
+      }
+    }
+  }
+
 
   // Constrain9: Back to back can't make gardner to hanes
   // TODO: ensure it works
