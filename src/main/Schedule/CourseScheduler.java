@@ -61,6 +61,7 @@ public class CourseScheduler {
       constraints.profsTeachOneDay(model, assign);
       constraints.classDuplicateTime(model, assign);
       constraints.hardsets(model, assign);
+      constraints.courseConflicts(model, assign);
       // TODO FIX
       // constraints.gardnerToHanes(model, assign);
 
