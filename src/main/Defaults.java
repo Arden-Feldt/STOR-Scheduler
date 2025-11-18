@@ -15,4 +15,6 @@ public class Defaults {
   public static final String RAWSCHEDULEPATH = "src/main/Schedule/course_schedule.csv";
   public static final String DISPLAYSCHEDULECSVPATH = "src/main/Schedule/legible_schedule.csv";
   public static final String HARDSETPATH = "src\\main\\givenData\\hardsets.csv";
+
+  public static final String CONFLICTSPATH = "src\\main\\givenData\\conflicts.csv";
 }
