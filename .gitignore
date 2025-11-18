@@ -29,3 +29,10 @@ bin/
 ### Mac OS ###
 .DS_Store
 /.idea/
+
+# ignore too
+venv/
+src/main/2023-2024/
+src/main/2025/
+src/main/Faculty/ProfessorData/
+lib/gurobi.jar
