@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STOR Course Scheduler</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+            padding: 0;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: #4B9CD3;
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-bottom: 3px solid #13294B;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+            font-weight: normal;
+        }
+
+        .header p {
+            font-size: 1em;
+            opacity: 0.95;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .upload-section {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .upload-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .file-upload {
+            margin-bottom: 20px;
+        }
+
+        .file-upload label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input-wrapper input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #4B9CD3;
+            background: white;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .file-input-wrapper input[type="file"]:hover {
+            border-color: #13294B;
+            background: #f0f8ff;
+        }
+
+        .file-name {
+            margin-top: 8px;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .btn {
+            background: #4B9CD3;
+            color: white;
+            border: 2px solid #13294B;
+            padding: 12px 40px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-weight: normal;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            background: #13294B;
+        }
+
+        .btn:active {
+            background: #0a1f3a;
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: #fee;
+            color: #c33;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .error.active {
+            display: block;
+        }
+
+        .success {
+            background: #efe;
+            color: #3c3;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .success.active {
+            display: block;
+        }
+
+        .schedule-section {
+            display: none;
+            margin-top: 30px;
+        }
+
+        .schedule-section.active {
+            display: block;
+        }
+
+        .schedule-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .schedule-table th {
+            background: #4B9CD3;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: normal;
+            border: 1px solid #13294B;
+        }
+
+        .schedule-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .schedule-table tr:hover {
+            background: #f0f8ff;
+        }
+
+        .schedule-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .empty-cell {
+            color: #ccc;
+            font-style: italic;
+        }
+
+        .download-btn {
+            background: #4B9CD3;
+            color: white;
+            border: 2px solid #13294B;
+            padding: 10px 25px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-weight: normal;
+            margin-top: 20px;
+            display: inline-block;
+        }
+
+        .download-btn:hover {
+            background: #13294B;
+        }
+
+        .download-btn:active {
+            background: #0a1f3a;
+        }
+
+        .schedule-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .navbar {
+            background: #13294B;
+            padding: 12px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #4B9CD3;
+        }
+
+        .navbar-brand {
+            color: white;
+            font-size: 1.3em;
+            font-weight: normal;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .navbar-links {
+            display: flex;
+            gap: 0;
+        }
+
+        .navbar-link {
+            color: white;
+            text-decoration: none;
+            font-weight: normal;
+            padding: 10px 20px;
+            border-left: 1px solid #4B9CD3;
+            transition: background 0.2s;
+        }
+
+        .navbar-link:first-of-type {
+            border-left: none;
+        }
+
+        .navbar-link:hover {
+            background: #4B9CD3;
+        }
+
+        .navbar-link.active {
+            background: #4B9CD3;
+        }
+
+        .unc-header {
+            background: #13294B;
+            padding: 15px 40px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            border-bottom: 3px solid #4B9CD3;
+        }
+
+        .unc-logo {
+            height: 50px;
+            width: auto;
+        }
+
+        .unc-text {
+            color: white;
+            font-size: 1.1em;
+        }
+
+        .unc-text h2 {
+            font-size: 1.2em;
+            font-weight: normal;
+            margin: 0;
+        }
+
+        .unc-text p {
+            font-size: 0.9em;
+            margin: 0;
+            opacity: 0.9;
+        }
+
+        .documentation-section {
+            display: none;
+        }
+
+        .documentation-section.active {
+            display: block;
+        }
+
+        .doc-section {
+            margin-bottom: 30px;
+            background: #f8f9fa;
+            padding: 25px;
+            border: 1px solid #ddd;
+            border-left: 4px solid #4B9CD3;
+        }
+
+        .doc-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .doc-section h4 {
+            color: #555;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .doc-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .doc-section ul {
+            color: #666;
+            line-height: 1.8;
+            margin-left: 20px;
+        }
+
+        .doc-section code {
+            background: #e9ecef;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #d63384;
+        }
+
+        .file-format-box {
+            background: white;
+            padding: 15px;
+            margin-top: 10px;
+            border: 1px solid #ddd;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+        }
+
+        .footer {
+            background: #13294B;
+            color: white;
+            padding: 20px 40px;
+            text-align: center;
+            border-top: 3px solid #4B9CD3;
+            font-size: 0.9em;
+        }
+
+        .footer p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="unc-header">
+        <svg class="unc-logo" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
+            <text x="10" y="40" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="white">UNC</text>
+        </svg>
+        <div class="unc-text">
+            <h2>University of North Carolina at Chapel Hill</h2>
+            <p>Department of Statistics and Operations Research (STOR)</p>
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <a href="#" class="navbar-brand" onclick="showScheduler(); return false;">STOR Course Scheduler</a>
+        <div class="navbar-links">
+            <a href="#" class="navbar-link active" id="nav-scheduler" onclick="showScheduler(); return false;">Scheduler</a>
+            <a href="#" class="navbar-link" id="nav-docs" onclick="showDocumentation(); return false;">Documentation</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div id="scheduler-section">
+        <div class="header">
+            <h1>STOR Course Scheduler</h1>
+            <p>Upload your CSV files to generate an optimized course schedule</p>
+        </div>
+
+        <div class="content">
+            <div class="upload-section">
+                <h2>Upload Files</h2>
+                
+                <div class="file-upload">
+                    <label for="preferenceFile">Preference File (CSV)</label>
+                    <div class="file-input-wrapper">
+                        <input type="file" id="preferenceFile" accept=".csv" />
+                    </div>
+                    <div class="file-name" id="preferenceFileName"></div>
+                </div>
+
+                <div class="file-upload">
+                    <label for="courseDataFile">Course Data File (CSV)</label>
+                    <div class="file-input-wrapper">
+                        <input type="file" id="courseDataFile" accept=".csv" />
+                    </div>
+                    <div class="file-name" id="courseDataFileName"></div>
+                </div>
+
+                <div class="file-upload">
+                    <label for="hardsetFile">Hardset File (CSV) <span style="color: #666; font-weight: normal;">(Optional)</span></label>
+                    <div class="file-input-wrapper">
+                        <input type="file" id="hardsetFile" accept=".csv" />
+                    </div>
+                    <div class="file-name" id="hardsetFileName"></div>
+                </div>
+
+                <div class="file-upload">
+                    <label for="conflictFile">Conflict File (CSV) <span style="color: #666; font-weight: normal;">(Optional)</span></label>
+                    <div class="file-input-wrapper">
+                        <input type="file" id="conflictFile" accept=".csv" />
+                    </div>
+                    <div class="file-name" id="conflictFileName"></div>
+                </div>
+
+                <button class="btn" id="submitBtn" onclick="uploadAndRun()">Generate Schedule</button>
+
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Processing your schedule... This may take a moment.</p>
+                </div>
+
+                <div class="error" id="error"></div>
+                <div class="success" id="success"></div>
+            </div>
+
+            <div class="schedule-section" id="scheduleSection">
+                <div class="schedule-header">
+                    <h2>Generated Schedule</h2>
+                    <button class="download-btn" id="downloadBtn" onclick="downloadSchedule()" style="display: none;">
+                        📥 Download CSV
+                    </button>
+                </div>
+                <div id="scheduleTableContainer"></div>
+            </div>
+        </div>
+        </div>
+
+        <div class="documentation-section" id="documentation-section">
+            <div class="header">
+                <h1>Documentation</h1>
+                <p>File format requirements for the STOR Course Scheduler</p>
+            </div>
+
+            <div class="content">
+                <div class="doc-section">
+                    <h3>1. Preference File (Required)</h3>
+                    <p>The preference file contains professor teaching time preferences with willingness scores.</p>
+                    
+                    <h4>Required Columns:</h4>
+                    <ul>
+                        <li><code>Professor Name</code> - Full name of the professor</li>
+                        <li><code>ID</code> - Professor's unique identifier (usually initials)</li>
+                        <li><code>Back to Back?</code> - 1 if professor prefers back-to-back classes, 0 otherwise</li>
+                        <li>Time slot columns (e.g., <code>MWF 8:00-8:50</code>, <code>TTH 9:30-10:45</code>) - Willingness scores from 1-10</li>
+                        <li><code>Notes</code> - Optional notes or special requests</li>
+                    </ul>
+
+                    <h4>Willingness Scores:</h4>
+                    <ul>
+                        <li><strong>1-3:</strong> Low preference</li>
+                        <li><strong>4-6:</strong> Moderate preference</li>
+                        <li><strong>7-9:</strong> High preference</li>
+                        <li><strong>10:</strong> Very high preference</li>
+                        <li><strong>Empty/Blank:</strong> Not available for that time slot</li>
+                    </ul>
+
+                    <h4>Example:</h4>
+                    <div class="file-format-box">
+Professor Name,ID,Back to Back?,MWF 8:00-8:50,MWF 9:05-9:55,TTH 8:00-9:15,Notes<br>
+John Smith,JS,1,10,8,5,Prefers morning classes<br>
+Jane Doe,JD,0,,,10,Only available TTH
+                    </div>
+                </div>
+
+                <div class="doc-section">
+                    <h3>2. Course Data File (Required)</h3>
+                    <p>The course data file contains information about courses, enrollment, and instructor assignments.</p>
+                    
+                    <h4>Required Columns:</h4>
+                    <ul>
+                        <li><code>ClassNum</code> - Course number/identifier (e.g., 120, 435, FYL20)</li>
+                        <li><code>TotalStudents</code> - Total number of students enrolled (can be empty)</li>
+                        <li><code>StudentsPerSection</code> - Maximum students per section (defaults to 50 if empty)</li>
+                        <li><code>Recitations</code> - Number of recitation sections (can be empty)</li>
+                        <li><code>Instructors</code> - Multiple columns for instructor IDs (e.g., Instructor1, Instructor2, etc.)</li>
+                    </ul>
+
+                    <h4>Instructor Values:</h4>
+                    <ul>
+                        <li>Professor ID (e.g., <code>JMcL</code>, <code>VP</code>) - Assigned professor</li>
+                        <li><code>NH</code> - No assignment needed</li>
+                        <li><code>DS</code> - Department staff</li>
+                        <li><code>NOASSIGNMENT</code> - No assignment</li>
+                        <li><code>GS</code> - Graduate student</li>
+                    </ul>
+
+                    <h4>Example:</h4>
+                    <div class="file-format-box">
+ClassNum,TotalStudents,StudentsPerSection,Recitations,Instructors,,,<br>
+120,300,100,1,JMcL,VP,VP,<br>
+435,400,100,,SBa,SBh,SBh,MOC<br>
+155,300,100,,Sba,MG,MG,
+                    </div>
+                </div>
+
+                <div class="doc-section">
+                    <h3>3. Hardset File (Optional)</h3>
+                    <p>The hardset file specifies courses that must be taught at specific times, rooms, and by specific faculty.</p>
+                    
+                    <h4>Required Columns:</h4>
+                    <ul>
+                        <li><code>name</code> - Course number/identifier</li>
+                        <li><code>faculty</code> - Faculty ID (must match IDs in preference file)</li>
+                        <li><code>room</code> - Room name (e.g., Hanes120, Hanes107, H125, Gardner, GradStudentRoom)</li>
+                        <li><code>time</code> - Time slot identifier (e.g., MWF800850, TTH800915)</li>
+                    </ul>
+
+                    <h4>Time Slot Format:</h4>
+                    <ul>
+                        <li><code>MWF</code> = Monday, Wednesday, Friday</li>
+                        <li><code>TTH</code> = Tuesday, Thursday</li>
+                        <li>Format: <code>MWF800850</code> = MWF 8:00-8:50</li>
+                        <li>Format: <code>TTH800915</code> = TTH 8:00-9:15</li>
+                    </ul>
+
+                    <h4>Example:</h4>
+                    <div class="file-format-box">
+name,faculty,room,time<br>
+320,ML,Hanes120,TTH800915<br>
+435,SBh,Hanes107,MWF11151205
+                    </div>
+
+                    <p><strong>Note:</strong> If not provided, the system will use default hardsets from the project directory, or skip hardset constraints if no file exists.</p>
+                </div>
+
+                <div class="doc-section">
+                    <h3>4. Conflict File (Optional)</h3>
+                    <p>The conflict file specifies pairs of courses that cannot be scheduled at the same time.</p>
+                    
+                    <h4>Required Columns:</h4>
+                    <ul>
+                        <li><code>Course1</code> - First course number</li>
+                        <li><code>Course2</code> - Second course number (conflicts with Course1)</li>
+                    </ul>
+
+                    <h4>Example:</h4>
+                    <div class="file-format-box">
+Course1,Course2<br>
+320,120<br>
+435,155
+                    </div>
+
+                    <p><strong>Note:</strong> If not provided, the system will use default conflicts from the project directory, or skip conflict constraints if no file exists.</p>
+                </div>
+
+                <div class="doc-section">
+                    <h3>General Notes</h3>
+                    <ul>
+                        <li>All files should be in <strong>CSV format</strong> (comma-separated values)</li>
+                        <li>Files should have a <strong>header row</strong> with column names</li>
+                        <li>Empty cells are allowed and will be handled appropriately</li>
+                        <li>The <strong>Preference</strong> and <strong>Course Data</strong> files are <strong>required</strong></li>
+                        <li>The <strong>Hardset</strong> and <strong>Conflict</strong> files are <strong>optional</strong></li>
+                        <li>If optional files are not provided, the system will use defaults or skip those constraints</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>STOR Course Scheduler</p>
+        <p>Developed by Arden Feldt</p>
+        <p>&copy; 2025 University of North Carolina at Chapel Hill</p>
+    </footer>
+
+    <script>
+        let currentSchedulePath = null;
+
+        function showScheduler() {
+            document.getElementById('scheduler-section').style.display = 'block';
+            document.getElementById('documentation-section').classList.remove('active');
+            document.getElementById('nav-scheduler').classList.add('active');
+            document.getElementById('nav-docs').classList.remove('active');
+        }
+
+        function showDocumentation() {
+            document.getElementById('scheduler-section').style.display = 'none';
+            document.getElementById('documentation-section').classList.add('active');
+            document.getElementById('nav-scheduler').classList.remove('active');
+            document.getElementById('nav-docs').classList.add('active');
+        }
+
+        // Update file names when files are selected
+        document.getElementById('preferenceFile').addEventListener('change', function(e) {
+            const fileName = e.target.files[0]?.name || '';
+            document.getElementById('preferenceFileName').textContent = fileName ? `Selected: ${fileName}` : '';
+        });
+
+        document.getElementById('courseDataFile').addEventListener('change', function(e) {
+            const fileName = e.target.files[0]?.name || '';
+            document.getElementById('courseDataFileName').textContent = fileName ? `Selected: ${fileName}` : '';
+        });
+
+        document.getElementById('hardsetFile').addEventListener('change', function(e) {
+            const fileName = e.target.files[0]?.name || '';
+            document.getElementById('hardsetFileName').textContent = fileName ? `Selected: ${fileName}` : '';
+        });
+
+        document.getElementById('conflictFile').addEventListener('change', function(e) {
+            const fileName = e.target.files[0]?.name || '';
+            document.getElementById('conflictFileName').textContent = fileName ? `Selected: ${fileName}` : '';
+        });
+
+        async function uploadAndRun() {
+            const preferenceFile = document.getElementById('preferenceFile').files[0];
+            const courseDataFile = document.getElementById('courseDataFile').files[0];
+            const hardsetFile = document.getElementById('hardsetFile').files[0];
+            const conflictFile = document.getElementById('conflictFile').files[0];
+            const loading = document.getElementById('loading');
+            const error = document.getElementById('error');
+            const success = document.getElementById('success');
+            const submitBtn = document.getElementById('submitBtn');
+            const scheduleSection = document.getElementById('scheduleSection');
+
+            // Reset UI
+            error.classList.remove('active');
+            success.classList.remove('active');
+            scheduleSection.classList.remove('active');
+            loading.classList.add('active');
+            submitBtn.disabled = true;
+
+            if (!preferenceFile || !courseDataFile) {
+                showError('Please select both required files (Preference and Course Data) before submitting.');
+                loading.classList.remove('active');
+                submitBtn.disabled = false;
+                return;
+            }
+
+            try {
+                const formData = new FormData();
+                formData.append('preferenceFile', preferenceFile);
+                formData.append('courseDataFile', courseDataFile);
+                
+                // Add optional files if provided
+                if (hardsetFile) {
+                    formData.append('hardsetFile', hardsetFile);
+                }
+                if (conflictFile) {
+                    formData.append('conflictFile', conflictFile);
+                }
+
+                const response = await fetch('/api/schedule/upload-and-run', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    success.textContent = result.message;
+                    success.classList.add('active');
+                    
+                    // Store schedule path for download
+                    currentSchedulePath = result.schedulePath;
+                    
+                    // Fetch and display schedule
+                    await displaySchedule(result.schedulePath);
+                } else {
+                    // Show error message from server
+                    const errorMsg = result.message || result.error || 'An error occurred during scheduling.';
+                    showError(errorMsg);
+                    console.error('Scheduling error:', result);
+                }
+            } catch (err) {
+                showError('Error: ' + err.message);
+            } finally {
+                loading.classList.remove('active');
+                submitBtn.disabled = false;
+            }
+        }
+
+        async function displaySchedule(schedulePath) {
+            try {
+                const response = await fetch(`/api/schedule/schedule-data?schedulePath=${encodeURIComponent(schedulePath)}`);
+                const result = await response.json();
+
+                if (result.success && result.data && result.data.length > 0) {
+                    const table = createScheduleTable(result.data);
+                    document.getElementById('scheduleTableContainer').innerHTML = table;
+                    document.getElementById('scheduleSection').classList.add('active');
+                    
+                    // Show download button
+                    document.getElementById('downloadBtn').style.display = 'inline-block';
+                    
+                    // Scroll to schedule
+                    document.getElementById('scheduleSection').scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    showError('Schedule data is empty or could not be loaded.');
+                }
+            } catch (err) {
+                showError('Error loading schedule: ' + err.message);
+            }
+        }
+
+        function createScheduleTable(data) {
+            if (!data || data.length === 0) {
+                return '<p>No schedule data available.</p>';
+            }
+
+            // Get all column names (headers)
+            const headers = Object.keys(data[0]);
+            
+            let html = '<table class="schedule-table"><thead><tr>';
+            headers.forEach(header => {
+                html += `<th>${header}</th>`;
+            });
+            html += '</tr></thead><tbody>';
+
+            // Add data rows
+            data.forEach(row => {
+                html += '<tr>';
+                headers.forEach(header => {
+                    const value = row[header] || '';
+                    const cellClass = value === '' ? 'empty-cell' : '';
+                    // Match CSV format exactly - empty cells are blank, not "—"
+                    html += `<td class="${cellClass}">${value}</td>`;
+                });
+                html += '</tr>';
+            });
+
+            html += '</tbody></table>';
+            return html;
+        }
+
+        function showError(message) {
+            const error = document.getElementById('error');
+            error.textContent = message;
+            error.classList.add('active');
+        }
+
+        function downloadSchedule() {
+            if (!currentSchedulePath) {
+                showError('No schedule available to download.');
+                return;
+            }
+
+            // Create download link
+            const downloadUrl = `/api/schedule/download-schedule?schedulePath=${encodeURIComponent(currentSchedulePath)}`;
+            const link = document.createElement('a');
+            link.href = downloadUrl;
+            link.download = 'schedule.csv';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+</body>
+</html>
+

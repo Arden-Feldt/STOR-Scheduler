@@ -19,18 +19,33 @@ public class CourseScheduler {
   private final Room[] rooms;
   private final String[] timeSlots;
   private final String output_path;
+  private final String hardsetPath;
+  private final String conflictPath;
 
   public CourseScheduler(
       FacultyManager facultyManager, CourseManager courseManager, String output_path) {
-
     this.courses = courseManager.getCourseArray();
     this.faculty = facultyManager.getFaculty().toArray(new Faculty[0]);
     this.timeSlots = facultyManager.getTIMESLOTSTRINGS();
     this.rooms = Room.values();
     this.output_path = output_path;
+    this.hardsetPath = null;
+    this.conflictPath = null;
   }
 
-  public void optimize() {
+  public CourseScheduler(
+      FacultyManager facultyManager, CourseManager courseManager, String output_path,
+      String hardsetPath, String conflictPath) {
+    this.courses = courseManager.getCourseArray();
+    this.faculty = facultyManager.getFaculty().toArray(new Faculty[0]);
+    this.timeSlots = facultyManager.getTIMESLOTSTRINGS();
+    this.rooms = Room.values();
+    this.output_path = output_path;
+    this.hardsetPath = hardsetPath;
+    this.conflictPath = conflictPath;
+  }
+
+  public void optimize() throws RuntimeException {
     try {
       // Create empty environment, create a new optimization model
       GRBEnv env = new GRBEnv();
@@ -50,7 +65,12 @@ public class CourseScheduler {
       objectiveFunction.initFunction(model, assign);
 
       // Constraints: course assignment, professor availability, room availability, etc.
-      Constraints constraints = new Constraints(courses, faculty, rooms, timeSlots);
+      Constraints constraints;
+      if (hardsetPath != null || conflictPath != null) {
+        constraints = new Constraints(courses, faculty, rooms, timeSlots, hardsetPath, conflictPath);
+      } else {
+        constraints = new Constraints(courses, faculty, rooms, timeSlots);
+      }
 
       constraints.singletonConstraint(model, assign);
       constraints.backToBackConstraint(model, assign);
@@ -68,6 +88,12 @@ public class CourseScheduler {
       // Optimize the model
       model.optimize();
 
+      // Check if optimization was successful
+      int status = model.get(GRB.IntAttr.Status);
+      if (status != GRB.OPTIMAL && status != GRB.SUBOPTIMAL) {
+        throw new RuntimeException("Optimization failed with status: " + status + ". The Gurobi optimizer may not have run successfully.");
+      }
+
       // Print and save results to CSV
       Exporter exporter = new Exporter(courses, faculty, rooms, timeSlots, output_path);
       exporter.export(model, assign);
@@ -77,9 +103,14 @@ public class CourseScheduler {
       env.dispose();
 
     } catch (GRBException e) {
-      System.out.println("Error code: " + e.getErrorCode() + ". " + e.getMessage());
+      String errorMsg = "Gurobi optimizer error (code " + e.getErrorCode() + "): " + e.getMessage();
+      System.err.println(errorMsg);
+      if (e.getErrorCode() == 10009) {
+        throw new RuntimeException("Gurobi license has expired. Please renew your Gurobi license to use the optimizer. " + e.getMessage(), e);
+      }
+      throw new RuntimeException(errorMsg, e);
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      throw new RuntimeException("Error exporting schedule: " + e.getMessage(), e);
     }
   }
 

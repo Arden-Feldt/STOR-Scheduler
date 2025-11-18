@@ -23,12 +23,26 @@ public class Constraints {
   private final Faculty[] faculty;
   private final Room[] rooms;
   private final String[] timeSlots;
+  private final String hardsetPath;
+  private final String conflictPath;
 
   public Constraints(Course[] courses, Faculty[] faculty, Room[] rooms, String[] timeSlots) {
     this.courses = courses;
     this.faculty = faculty;
     this.rooms = rooms;
     this.timeSlots = timeSlots;
+    this.hardsetPath = HARDSETPATH;
+    this.conflictPath = CONFLICTSPATH;
+  }
+
+  public Constraints(Course[] courses, Faculty[] faculty, Room[] rooms, String[] timeSlots, 
+                     String hardsetPath, String conflictPath) {
+    this.courses = courses;
+    this.faculty = faculty;
+    this.rooms = rooms;
+    this.timeSlots = timeSlots;
+    this.hardsetPath = hardsetPath;
+    this.conflictPath = conflictPath;
   }
 
   // Meat and potatoes of making every-fucking-thing work
@@ -385,8 +399,20 @@ public class Constraints {
   }
 
   public void hardsets(GRBModel model, GRBVar[][][][] assign) throws GRBException, IOException {
+    // Skip if no hardset file provided
+    if (hardsetPath == null || hardsetPath.isEmpty()) {
+      System.out.println("No hardset file provided, skipping hardset constraints.");
+      return;
+    }
+
+    java.io.File hardsetFile = new java.io.File(hardsetPath);
+    if (!hardsetFile.exists()) {
+      System.out.println("Hardset file not found at " + hardsetPath + ", skipping hardset constraints.");
+      return;
+    }
+
     HardsetReader hardsetReader =
-        new HardsetReader(HARDSETPATH, courses, faculty, rooms, timeSlots);
+        new HardsetReader(hardsetPath, courses, faculty, rooms, timeSlots);
 
     Map<Course, List<FacultyTimeslotRoom>> hardsetMap = hardsetReader.readCSV();
 
@@ -456,7 +482,19 @@ public class Constraints {
 
   public void courseConflicts(GRBModel model, GRBVar[][][][] x)
           throws GRBException, IOException {
-    ConflictReader conflictReader = new ConflictReader(CONFLICTSPATH);
+    // Skip if no conflict file provided
+    if (conflictPath == null || conflictPath.isEmpty()) {
+      System.out.println("No conflict file provided, skipping conflict constraints.");
+      return;
+    }
+
+    java.io.File conflictFile = new java.io.File(conflictPath);
+    if (!conflictFile.exists()) {
+      System.out.println("Conflict file not found at " + conflictPath + ", skipping conflict constraints.");
+      return;
+    }
+
+    ConflictReader conflictReader = new ConflictReader(conflictPath);
     HashMap<String, String> conflictCourses = conflictReader.readCSV();
     System.out.println(conflictCourses.isEmpty());
 

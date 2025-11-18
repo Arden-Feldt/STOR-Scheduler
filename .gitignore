@@ -1,38 +1,65 @@
-### IntelliJ IDEA ###
-out/
-!**/src/main/**/out/
-!**/src/test/**/out/
-.idea/**
+# Maven
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
 
-### Eclipse ###
+# IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+
+# Eclipse
 .apt_generated
 .classpath
 .factorypath
 .project
-.settings
+.settings/
 .springBeans
 .sts4-cache
-bin/
-!**/src/main/**/bin/
-!**/src/test/**/bin/
 
-### NetBeans ###
+# NetBeans
 /nbproject/private/
 /nbbuild/
 /dist/
 /nbdist/
 /.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
 
-### VS Code ###
+# VS Code
 .vscode/
 
-### Mac OS ###
-.DS_Store
-/.idea/
-
-# ignore too
+# Python (if you have any Python scripts)
 venv/
-src/main/2023-2024/
-src/main/2025/
-src/main/Faculty/ProfessorData/
-lib/gurobi.jar
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Application specific
+temp/
+*.log
+*.csv
+*.csv.bak
+*.pdf
+*.docx
+*.xlsx
+
+# Large data files (optional - uncomment if you don't need historical data)
+# src/main/2023-2024/
+# src/main/2025/
+
+# Gurobi JAR (uncomment if you want to exclude it - but you'll need it for deployment)
+# lib/gurobi.jar
