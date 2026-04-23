@@ -18,13 +18,16 @@ public class CourseUpdater {
   }
 
   public void updateCourses() {
+    System.out.println("Starting CourseUpdater. Total courses to update: " + courses.size());
     try (BufferedReader br = new BufferedReader(new FileReader(path))) {
       String line;
       br.readLine(); // Skip the header
 
       HashSet<Course> updatedCourses = new HashSet<>();
+      int linesProcessed = 0;
 
       while ((line = br.readLine()) != null) {
+        linesProcessed++;
         String[] values = line.split(",");
         if (values.length < 4) {
           System.err.println("Skipping line due to missing data: " + line);
@@ -40,7 +43,7 @@ public class CourseUpdater {
         Course courseToUpdate = null;
         for (Course course : courses) {
           if (course.getName().equalsIgnoreCase(courseName)
-              && course.getFaculty().getName().equals(professorName)
+              && course.getFaculty().getName().trim().equalsIgnoreCase(professorName.trim())
               && !updatedCourses.contains(course)) {
             courseToUpdate = course;
             updatedCourses.add(course);
@@ -54,14 +57,24 @@ public class CourseUpdater {
             courseToUpdate.setTimeSlot(TimeSlot.valueOf(timeSlot));
             courseToUpdate.setRoom(Room.valueOf(roomName));
             numCoursesUpdated++;
+            System.out.println("Updated: " + courseName + " with " + professorName + " at " + timeSlot + " in " + roomName);
           } catch (IllegalArgumentException e) {
-            System.err.println("Invalid room name: " + roomName);
+            System.err.println("Invalid timeSlot or room name: " + timeSlot + " / " + roomName + " - " + e.getMessage());
           }
         } else {
           System.err.println(
               "Course not found or already updated: " + courseName + " with " + professorName);
+          // Debug: show available courses with this name
+          System.err.println("Available courses with name '" + courseName + "':");
+          for (Course course : courses) {
+            if (course.getName().equalsIgnoreCase(courseName)) {
+              System.err.println("  - " + course.getName() + " with " + course.getFaculty().getName());
+            }
+          }
         }
       }
+      System.out.println("CourseUpdater finished. Processed " + linesProcessed + " lines, updated " + numCoursesUpdated + " courses.");
+      System.out.println("Total courses in set: " + courses.size() + ", Updated: " + numCoursesUpdated);
     } catch (IOException e) {
       e.printStackTrace();
     }

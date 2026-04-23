@@ -37,9 +37,8 @@
             <groupId>com.gurobi</groupId>
             <artifactId>gurobi</artifactId>
             <version>10.0.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/gurobi.jar</systemPath>
         </dependency>
+
 
         <!-- JUnit for testing -->
         <dependency>

@@ -209,9 +209,16 @@ public class Constraints {
   // You can only teach big classes in big rooms
   public void enoughSeatsConstraint(GRBModel model, GRBVar[][][][] assign) throws GRBException {
     // 6. Courses must be assigned to rooms with enough seats
+    // Use totalStudents (not sectionStudents) because the room must accommodate all students
     for (int i = 0; i < courses.length; i++) {
+      int requiredSeats = courses[i].getTotalStudents();
+      // If totalStudents is -1 (unknown), fall back to sectionStudents
+      if (requiredSeats < 0) {
+        requiredSeats = courses[i].getSectionStudents();
+      }
+      
       for (int r = 0; r < rooms.length; r++) {
-        if (courses[i].getSectionStudents() > rooms[r].getNumSeats()) {
+        if (requiredSeats > rooms[r].getNumSeats()) {
           for (int j = 0; j < faculty.length; j++) {
             for (int k = 0; k < timeSlots.length; k++) {
               model.addConstr(
@@ -287,6 +294,53 @@ public class Constraints {
         blockLimit.addTerm(-M, gradCourseAssigned);
         model.addConstr(blockExpr, GRB.LESS_EQUAL, blockLimit, "block_if_grad_" + k + "_" + r);
       }
+    }
+  }
+
+  // Prevent 600-level courses from being scheduled immediately after grad classes in any room
+  public void blockSixHundredAfterGradCourse(GRBModel model, GRBVar[][][][] assign) throws GRBException {
+    int M = faculty.length * courses.length; // Large enough upper bound
+
+    for (int k = 0; k < timeSlots.length - 1; k++) { // Ensure k+1 is valid
+      // Create a binary variable to indicate if any grad course (>= 600) is scheduled at time k in any room
+      GRBVar gradCourseAtK = model.addVar(0, 1, 0, GRB.BINARY, "grad_at_timeslot_" + k);
+
+      // Expression to check if any grad course (>= 600) is scheduled at time k in any room
+      GRBLinExpr gradExpr = new GRBLinExpr();
+      for (int i = 0; i < courses.length; i++) {
+        if (courses[i].isGraduateCourseInclusive()) {
+          for (int j = 0; j < faculty.length; j++) {
+            for (int r = 0; r < rooms.length; r++) {
+              gradExpr.addTerm(1, assign[i][j][k][r]);
+            }
+          }
+        }
+      }
+
+      // Ensure gradCourseAtK is 1 if any grad course is assigned at time k
+      model.addConstr(
+          gradExpr, GRB.GREATER_EQUAL, gradCourseAtK, "force_grad_at_k_" + k);
+      GRBLinExpr gradUpperBound = new GRBLinExpr();
+      gradUpperBound.addTerm(M, gradCourseAtK);
+      model.addConstr(gradExpr, GRB.LESS_EQUAL, gradUpperBound, "limit_grad_at_k_" + k);
+
+      // Expression to check if any 600-level course (600-699) is scheduled at time k+1 in any room
+      GRBLinExpr sixHundredExpr = new GRBLinExpr();
+      for (int i = 0; i < courses.length; i++) {
+        if (courses[i].isGraduateCourse()) { // 600-level courses only (600-699)
+          for (int j = 0; j < faculty.length; j++) {
+            for (int r = 0; r < rooms.length; r++) {
+              sixHundredExpr.addTerm(1, assign[i][j][k + 1][r]);
+            }
+          }
+        }
+      }
+
+      // If gradCourseAtK is 1, ensure no 600-level courses at k+1
+      GRBLinExpr blockLimit = new GRBLinExpr();
+      blockLimit.addConstant(M);
+      blockLimit.addTerm(-M, gradCourseAtK);
+      model.addConstr(sixHundredExpr, GRB.LESS_EQUAL, blockLimit, "block_600_after_grad_" + k);
     }
   }
 

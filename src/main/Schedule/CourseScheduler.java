@@ -78,6 +78,7 @@ public class CourseScheduler {
       constraints.enoughSeatsConstraint(model, assign);
       constraints.sixHundredOverlap(model, assign);
       constraints.blockRoomAfterGradCourse(model, assign);
+      constraints.blockSixHundredAfterGradCourse(model, assign);
       constraints.profsTeachOneDay(model, assign);
       constraints.classDuplicateTime(model, assign);
       constraints.hardsets(model, assign);

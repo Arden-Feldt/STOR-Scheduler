@@ -41,37 +41,65 @@ public class CourseReader {
     }
 
     // Now `data` contains the parsed data rows as arrays of strings
+    System.out.println("Processing " + data.size() + " rows from CSV");
     for (String[] row : data) {
-      for (int i = 4; i < row.length; i++) {
+      if (row.length < 4) {
+        System.err.println("Skipping row with insufficient columns (length " + row.length + "): " + Arrays.toString(row));
+        continue;
+      }
+      
+      String courseName = row[0].trim();
+      int instructorCount = 0;
+      
+      // Instructors start at index 3 (after ClassNum, StudentNum, Recitations)
+      // The header has "Instructors" at index 3, but the actual instructor data also starts there
+      for (int i = 3; i < row.length; i++) {
+        // Trim whitespace from instructor name
+        String instructorName = row[i].trim();
 
         int sectionStudents = initSectionSize(row[2]);
         int totalStudents = initTotalStudents(row[1]);
 
-        if (facultyManager.isProfessor(row[i])) {
-          courses.add(
-              new Course(
-                  row[0], facultyManager.getProfessor(row[i]), totalStudents, sectionStudents));
+        if (facultyManager.isProfessor(instructorName)) {
+          Course newCourse = new Course(
+              courseName, facultyManager.getProfessor(instructorName), totalStudents, sectionStudents);
+          courses.add(newCourse);
           numCourses++;
-        } else if (row[i].equalsIgnoreCase("NH")
-            || row[i].equalsIgnoreCase("DS")
-            || row[i].equalsIgnoreCase("NOASSIGNMENT")) { // TODO: Specific to STOR, make general
-          Professor newProf = new Professor(row[i]);
-          courses.add(new Course(row[0], newProf, totalStudents, sectionStudents));
+          instructorCount++;
+        } else if (instructorName.equalsIgnoreCase("NH")
+            || instructorName.equalsIgnoreCase("DS")
+            || instructorName.equalsIgnoreCase("NOASSIGNMENT")) { // TODO: Specific to STOR, make general
+          Professor newProf = new Professor(instructorName);
+          courses.add(new Course(courseName, newProf, totalStudents, sectionStudents));
           facultyManager.addProf(newProf);
-        } else if (row[i].equalsIgnoreCase("GS")) {
-          GradStudent gradStudent = new GradStudent(row[i]);
-          courses.add(new Course(row[0], gradStudent, totalStudents, sectionStudents));
+          numCourses++;
+          instructorCount++;
+        } else if (instructorName.equalsIgnoreCase("GS")) {
+          GradStudent gradStudent = new GradStudent(instructorName);
+          courses.add(new Course(courseName, gradStudent, totalStudents, sectionStudents));
           facultyManager.addGrad(gradStudent);
-        } else if (row[i].isEmpty()) {
-          throw new NoSuchElementException("Element Empty: " + Arrays.toString(row));
+          numCourses++;
+          instructorCount++;
+        } else if (instructorName.isEmpty()) {
+          // Skip empty instructor fields
+          continue;
         } else {
-          throw new NoSuchElementException(
-              "Course Reader: For class " + row[i] + ", prof not found");
+          // Auto-create professor if not found (for placeholder instructors like NewTAPDS1, etc.)
+          System.out.println("Warning: Professor '" + instructorName + "' not found in preferences. Creating new professor.");
+          Professor newProf = new Professor(instructorName);
+          courses.add(new Course(courseName, newProf, totalStudents, sectionStudents));
+          facultyManager.addProf(newProf);
+          numCourses++;
+          instructorCount++;
         }
-        System.out.print(row[i] + "\t"); // Print each field (tab-separated)
+        System.out.print(instructorName + "\t"); // Print each field (tab-separated)
+      }
+      if (instructorCount == 0) {
+        System.err.println("Warning: Course '" + courseName + "' has no instructors assigned!");
       }
       System.out.println(); // Move to the next line for the next row
     }
+    System.out.println("CourseReader finished. Total courses created: " + numCourses + ", Unique courses in set: " + courses.size());
   }
 
   private int initSectionSize(String section) {

@@ -28,12 +28,26 @@ public class PreferenceReader {
 
       String line;
       while ((line = br.readLine()) != null) {
+        // Skip empty lines
+        if (line.trim().isEmpty()) {
+          continue;
+        }
+        
         System.out.println(line); // Bugtesting
 
         String[] value = line.split(",");
+        
+        // Skip lines that don't have enough columns (need at least 3: Timestamp, Name, Back to Back)
+        if (value.length < 3) {
+          System.err.println("Skipping invalid line (insufficient columns): " + line);
+          continue;
+        }
 
+        // Trim whitespace from professor name
+        String professorName = value[1].trim();
+        
         // Init prof
-        Professor professor = new Professor(value[1]);
+        Professor professor = new Professor(professorName);
         professors.add(professor);
 
         // Build body for friends
@@ -41,6 +55,11 @@ public class PreferenceReader {
         int[] willingness = new int[TimeSlot.getNumTimeSlots()];
 
         for (int i = willingnessOffset; i <= willingnessOffset + TimeSlot.getNumTimeSlots() - 1; i++) { // TODO: Remove hardcoding
+          // Check if index is within bounds
+          if (i >= value.length) {
+            willingness[i - 3] = 0;
+            continue;
+          }
           if (value[i].isEmpty() || value[i] == null) {
             willingness[i - 3] = 0;
           } else {
@@ -59,7 +78,12 @@ public class PreferenceReader {
 
         professor.setWillingness(willingness);
         professor.setTimeSlots(timeslots);
-        professor.setBackToBack((value[2]).equals("1"));
+        // Safely check Back to Back value (trim whitespace)
+        if (value.length > 2) {
+          professor.setBackToBack((value[2].trim()).equals("1"));
+        } else {
+          professor.setBackToBack(false);
+        }
       }
     } catch (IOException e) {
       e.printStackTrace();

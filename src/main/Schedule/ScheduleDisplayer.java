@@ -25,13 +25,19 @@ public class ScheduleDisplayer {
     public void save_schedule() {
         // Initialize a map to store the schedule
         Map<String, Map<Room, String>> schedule = new HashMap<>();
+        
+        int coursesWithTimeSlot = 0;
+        int coursesWithoutTimeSlot = 0;
 
         // Populate the schedule map with courses
         for (Course course : courses) {
             if (course.getTimeSlot() == null) {
+                coursesWithoutTimeSlot++;
+                System.err.println("Course without time slot: " + course.getName() + " with " + course.getFaculty().getName());
                 continue;
                 // throw new NullPointerException("Course has not timeslot!: " + course.getName() + " with " + course.getFaculty());
             }
+            coursesWithTimeSlot++;
             String timeSlot = course.getTimeSlot().toString();
             Room room = course.getRoom();
             String value = course.getName() + " " + course.getFaculty().getName();
@@ -65,6 +71,8 @@ public class ScheduleDisplayer {
                 }
                 writer.append("\n");
             }
+            
+            System.out.println("Schedule saved. Courses with time slots: " + coursesWithTimeSlot + ", without: " + coursesWithoutTimeSlot);
         } catch (IOException e) {
             e.printStackTrace();
         }

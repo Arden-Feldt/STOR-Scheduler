@@ -25,8 +25,9 @@ public class FacultyManager {
   }
 
   public boolean isProfessor(String name) {
+    String trimmedName = name.trim();
     for (Professor professor : getProfessors()) {
-      if (professor.getName().equalsIgnoreCase(name)) {
+      if (professor.getName().trim().equalsIgnoreCase(trimmedName)) {
         return true;
       }
     }
@@ -34,8 +35,9 @@ public class FacultyManager {
   }
 
   public Faculty getProfessor(String name) {
+    String trimmedName = name.trim();
     for (Professor professor : getProfessors()) {
-      if (professor.getName().equalsIgnoreCase(name)) {
+      if (professor.getName().trim().equalsIgnoreCase(trimmedName)) {
         return professor;
       }
     }
